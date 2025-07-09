@@ -2,8 +2,10 @@
 
 ## Table Of Contents
 - [Day-1-Introduction to Verilog RTL design and Synthesis](#Day-1-Introduction-to-verilog-RTL-design-and-synthesis)
-  - [Introduction to open-source simulator iverilog](Introduction-to-open-source-simulator-iverilog)
-     - [Sky130RTLD1SK1L1 Introduction to verlog design testbench](sky130RTLD1SK1L1-introduction-to-verilog-design-testbench)
+  - [Introduction to open-source simulator iverilog](#Introduction-to-open-source-simulator-iverilog)
+    - [Sky130RTL D1SK1 L1 Introduction to verlog design testbench](#sky130RTLD1SK1L1-introduction-to-verilog-design-testbench)
+  - [Labs using iverilog and gtkwave](#labs-using-iverilog-and-gtkwave)
+    - [Sky130RTL D1SK2 L1 Lab1 Introduction to lab](#Sky130RTL-D1SK2-L1-Lab1-Introduction-to-lab)
 
 # Day-1- Introduction to Verilog RTL design and Synthesis
 
@@ -30,7 +32,23 @@ We have a Design with primary Inputs(one or many) and primary outputs(one or man
 
 *NOTE:*
 * *Designs may have one or more Primary inputs and Primary Outputs.*
-* *Test Bench does not have a Primary input and Primary output.*
+* *Test Bench does not have a Primary input and Primary output. Only Design has primary input and primary output.*
+
+**Iverilog Simulation Flow**
+* We will write verilog code and testbench
+* Compile the verilog code and testbench to iverilog simulator, which will give the changes at the output for the changes in the input.
+* At the output of iverilog we will get a vcd(value change dump) file format.
+* For observing the waveform, we will give vcd format file to GTkwave and observe the required changes.
+
+![image](https://github.com/user-attachments/assets/9f2bae9e-4489-4040-9f70-4d9a65d24124)
+
+
+## Labs using iverilog and gtkwave
+
+### Sky130RTL D1SK2 L1 Lab1 Introduction to lab
+
+
+
 
 
 
