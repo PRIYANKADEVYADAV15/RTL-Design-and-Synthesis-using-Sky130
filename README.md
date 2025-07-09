@@ -56,9 +56,12 @@ Here we will be looking at the environment setup which are needed for the course
 5) ```bash
    cd sky130RTLDesignAndSynthesisWorkshop/
    ```
+   
 6) Install Required Tools:
 `sudo apt install iverilog`
+
 `sudo apt install gtkwave`
+
 7)Inside the sky130RTLDesignAndSynthesisWorkshop folder, we have `verilog_files` is the folder which contains all the lab experiments which we will perform. Contains all the verilog source files, test bench files for the experiment.
 
 ![image](https://github.com/user-attachments/assets/18731d94-02ab-45e1-b1d7-6be8f897be0a)
