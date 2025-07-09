@@ -86,7 +86,7 @@ iverilog good_mux.v tb_good_mux.v
 ![image](https://github.com/user-attachments/assets/f891ca86-eb5c-48d5-bf98-7226ca6a531a)
 
 **Step 2: Execute the output file**
-We will se a file `a.out` being created, we will execute this output file.</br>
+We will see a file `a.out` being created, we will execute this output file.</br>
 ```tcl
 ./a.out
 ```
@@ -113,13 +113,44 @@ Let's look into the output file structure.</br>
 ```gvim tb_good_mux.v -o good_mux.v```
 
 We will have the test bench and the design.</br>
-Below is the Design.</br>
+Below is the Design.The design shows a 2:1 multiplexer.</br>
+
+![image](https://github.com/user-attachments/assets/67732e1e-cdba-4db4-ad05-41e4df656edc)
+
 ```tcl
 module good_mux (input i0, input i1, input sel, output reg y);
 ```
 * The verilog code indicates the name `good_mux`
-* 
-![image](https://github.com/user-attachments/assets/67732e1e-cdba-4db4-ad05-41e4df656edc)
+* `i0`: first input
+* `i1`: second input
+* `sel`: select signal
+* `y`: output (declared as `reg` because it will be assigned inside an `always` block)
+
+```tcl
+always @(*)
+```
+* This is a combinational `always` block.
+* `@(*)` means it runs whenever any signal used in the block changes.
+
+```tcl
+begin
+```
+* Begins the block of statements that will execute when triggered.
+
+```tcl
+if(sel)
+        y <= i1;
+else
+        y <= i0;
+```
+* If the `sel` input is high (1), then `i1` is assigned to `y`.
+* Otherwise (when `sel` is `0`), `i0` is assigned to `y`.
+
+```tcl
+end
+endmodule
+```
+* These lines close the `always` block and the `module` respectively.
 
 
 
