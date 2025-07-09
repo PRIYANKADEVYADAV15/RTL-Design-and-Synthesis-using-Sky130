@@ -2,4 +2,6 @@
 
 ## Table Of Contents
 - [Day-1- Introduction to Verilog RTL design and Synthesis](#Day 1- Introduction-to-verilog-RTL-design-and-synthesis)
+
+# Day-1- Introduction to Verilog RTL design and Synthesis
   
