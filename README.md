@@ -109,8 +109,19 @@ A window will pop up projecting the waveform, Follow the following steps:
 This is How we will load the design and check the functionality.</br>
 
 ### Sky130RTL D1SK2 L3 Lab3 Introduction to iverilog gtkwave part2
-Let's look into the output file structure.
+Let's look into the output file structure.</br>
 ```gvim tb_good_mux.v -o good_mux.v```
+
+We will have the test bench and the design.</br>
+Below is the Design.</br>
+```tcl
+module good_mux (input i0, input i1, input sel, output reg y);
+```
+* The verilog code indicates the name `good_mux`
+* 
+![image](https://github.com/user-attachments/assets/67732e1e-cdba-4db4-ad05-41e4df656edc)
+
+
 
 
 
