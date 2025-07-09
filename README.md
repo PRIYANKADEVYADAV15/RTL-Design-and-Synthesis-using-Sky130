@@ -46,6 +46,17 @@ We have a Design with primary Inputs(one or many) and primary outputs(one or man
 ## Labs using iverilog and gtkwave
 
 ### Sky130RTL D1SK2 L1 Lab1 Introduction to lab
+Here we will be looking at the environment setup which are needed for the course. First, we will look into the tool setup then the file setup required.</br>
+* Open the terminal 
+* Write the sudo password
+* type `sudo apt-get install git` (it is a Linux terminal command used to install Git on a system that uses the APT (Advanced Package Tool) package manager.
+* Go to home directory
+* 
+
+![image](https://github.com/user-attachments/assets/4dab7ec1-8494-4f07-ad4d-6844866fc9c2)
+
+  
+
 
 
 
