@@ -58,6 +58,7 @@ Here we will be looking at the environment setup which are needed for the course
    ```
    
 6) Install Required Tools:
+   
 `sudo apt install iverilog`
 
 `sudo apt install gtkwave`
