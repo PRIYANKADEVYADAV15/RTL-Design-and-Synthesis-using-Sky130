@@ -12,15 +12,15 @@
 ## Introduction to open-source simulator iverilog
 
 ### Sky130RTLD1SK1L1 Introduction to verlog design testbench
-**What is a Simulator?**
+**What is a Simulator?**</br>
 A simulator is a software tool that imitates the behavior of a real system, allowing you to test and observe how it works without using the actual hardware.</br>
 RTL design is checked for adherence to the spec by simulating the design.</br>
 Iverilog is a popular open-source Verilog simulation and synthesis tool. It is widely used in academia and open-source hardware projects for simulating digital circuits written in the Verilog hardware description language (HDL).</br>
 
-**What is a Design?**
+**What is a Design?**</br>
 Design is the actual verilog code or set of verilog codes which has the intended functionality to meet the required specifications.</br>
 
-**What is a Test-Bench?**
+**What is a Test-Bench?**</br>
 Now, I have my design and I need to check if the design obeys the required spec(specifications) or not. For this I need to apply the stimulus to the design and check it's functionality. So, Testbench is a setup to apply the stimulus (test-vectors) to the design and check it's functionality.</br>
 
 **How Simulator Works?**
@@ -46,6 +46,7 @@ We have a Design with primary Inputs(one or many) and primary outputs(one or man
 ## Labs using iverilog and gtkwave
 
 ### Sky130RTL D1SK2 L1 Lab1 Introduction to lab
+
 
 
 
