@@ -152,6 +152,97 @@ endmodule
 ```
 * These lines close the `always` block and the `module` respectively.
 
+Below is the Test bench(`tb_good_mux`) for simulating `good_mux` module.</br>
+
+![image](https://github.com/user-attachments/assets/7847b1b9-17bc-4d4c-8843-6c38f257dcd4)
+
+```tcl
+`timescale 1ns / 1ps
+```
+* Sets the simulation time unit and time precision.
+* `1ns` = 1 nanosecond time step.
+* `1ps` = precision of 1 picosecond (used for delay rounding).
+
+`module tb_good_mux;`
+* This starts the testbench module.
+* No Input and Output ports here because testbenches are self-contained.
+
+```tcl
+// Inputs
+reg i0, i1, sel;
+
+// Outputs
+wire y;
+```
+* Declares three reg variables to drive input signals (`i0`, `i1`, `sel`)
+* `y` is declared as wire since it will be connected to the output of the DUT (Design Under Test)
+
+```tcl
+good_mux uut (
+    .sel(sel),
+    .i0(i0),
+    .i1(i1),
+    .y(y)
+);
+```
+* Instantiates the good_mux module.
+* uut stands for Unit Under Test.
+* Connects the testbench signals to the DUT ports using named port mapping.
+
+```tcl
+initial begin
+    $dumpfile("tb_good_mux.vcd");
+    $dumpvars(0, tb_good_mux);
+```
+* Generates a VCD (Value Change Dump) file for waveform viewing.
+* Dumps all variables inside the module for GTKWave or any VCD viewer.
+
+```tcl
+// Initialize Inputs
+    sel = 0;
+    i0 = 0;
+    i1 = 0;
+```
+* Sets initial values for inputs at time 0.
+
+```tcl
+#300 $finish;
+```
+* Ends the simulation after 300 ns.
+
+```tcl
+end
+```
+* Ends the `initial` block.
+
+```tcl
+always #75 sel = ~sel;
+always #10 i0 = ~i0;
+always #55 i1 = ~i1;
+```
+* Every 75 ns, toggles the value of sel (0 → 1 → 0 → ...)
+* Toggles i0 every 10 ns.
+* Toggles i1 every 55 ns.
+
+```tcl
+endmodule
+```
+* Closes the `tb_good_mux` module.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
