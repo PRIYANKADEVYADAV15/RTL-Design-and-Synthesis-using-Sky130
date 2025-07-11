@@ -8,6 +8,14 @@
     - [Sky130RTL D1SK2 L1 Lab1 Introduction to lab](#Sky130RTL-D1SK2-L1-Lab1-Introduction-to-lab)
     - [Sky130RTL D1SK2 L2 Lab2 Introduction to iverilog gtkwave part1](#Sky130RTL-D1SK2-L2-Lab2-Introduction-to-iverilog-gtkwave-part1)
     - [Sky130RTL D1SK2 L3 Lab3 Introduction to iverilog gtkwave part2](#Sky130RTL-D1SK2-L3-Lab3-Introduction-to-iverilog-gtkwave-part2)
+  - [Introduction to Yosys and Logic Synthesis](#Introduction-to-Yosys-and-Logic-Synthesis)
+    - [Sky130RTL D1SK3 L1 Introduction to Yosys](#Sky130RTL-D1SK3-L1-Introduction-to-Yosys)
+    - [Sky130RTL D1SK3 L2 Introduction to Logic Synthesis part1](#Sky130RTL-D1SK3-L2-Introduction-to-Logic-Synthesis-part1)
+    - [Sky130RTL D1SK3 L3 Introduction to Logic Synthesis part2](#Sky130RTL-D1SK3-L3-Introduction-to-Logic-Synthesis-part2)
+  - [Labs using Yosys and Sy130 PDKs](#Labs-using-Yosys-and-Sy130-PDKs)
+    - [Sky130RTL D1SK4 L1 Lab3 Yosys 1 good mux Part1](#Sky130RTL-D1SK4-L1-Lab3-Yosys-1-good-mux-Part1)
+    - [Sky130RTL D1SK4 L2 Lab3 Yosys 1 good mux Part2](#Sky130RTL-D1SK4-L2-Lab3-Yosys-1-good-mux-Part2)
+    - [Sky130RTL D1SK4 L3 Lab3 Yosys 1 good mux Part3](#Sky130RTL-D1SK4-L3-Lab3-Yosys-1-good-mux-Part3)
 
 # Day-1- Introduction to Verilog RTL design and Synthesis
 
@@ -228,6 +236,109 @@ always #55 i1 = ~i1;
 endmodule
 ```
 * Closes the `tb_good_mux` module.
+
+## Introduction to Yosys and Logic Synthesis
+### Sky130RTL D1SK3 L1 Introduction to Yosys
+**Synthesizer:**Synthesizer is tool that coverts RTL(Register Transfer Level) into a gate-level netlist. Which further can be implemented on an FPGA or fabricated as an ASIC. </br>
+
+**Yosys:** Yosys is an Open-source tool used for synthesizing. </br>
+
+**The typical flow using Yosys is as follows:**
+We have the design, and we have the `.lib` verilog file. It is given to yosys and we get the output as netlist.</br>
+
+![image](https://github.com/user-attachments/assets/ef8437a6-9035-4d84-a0ea-fcf05320cf5f)
+
+**Yosys Setup:**
+1) We have a `read_verilog` command to read the Design, and `read_liberty` command to read the `.lib`.
+2) At the output we have the `write_verilog` for netlist, netlist is the presentation of design in form of cells present in `.lib`.
+
+![image](https://github.com/user-attachments/assets/407b7ba4-63bd-4d24-addf-141e2eb93b14)
+
+**Verify the Synthesis:**
+1) We have the netlist and the TestBench.
+2) We have the Simulator iverilog.
+3) We get the output as vcd file.
+4) Run gtkwave to get the waveform.
+
+![image](https://github.com/user-attachments/assets/77dec60f-82a3-4cad-bf37-fc065d3221ad)
+
+
+*Note:
+* *The stimulus should be same as output observed during RTL design.*
+* *TestBench is also going to be same as RTL TestBench.*
+
+### Sky130RTL D1SK3 L2 Introduction to Logic Synthesis part1
+We will discuss about the complete flow of Logic Synthesis.</br>
+**First is RTL Design:** RTL Design is the behavioural representation of required specification. It is written in the form of HDL code as shown below.</br>
+![image](https://github.com/user-attachments/assets/d53c8ed7-7785-451f-9ada-857f3aa17071)
+
+Now to convert the RTL design into a digital logic circuit we need a Synthesizer.</br>
+![image](https://github.com/user-attachments/assets/529b0a9d-82f4-4b51-a8a1-25bcc64468fe)
+
+* We need to convert RTL to gate level translation.
+* The design is converted into gate and the connections are amde between the gates.
+* This is given out as a file called netlist.
+![image](https://github.com/user-attachments/assets/663ff9cc-9dba-4525-8f31-db22002c3f02)
+
+**What is `.lib`?**
+a) It is a collection of all logical modules and standard cells.
+b) It includes all basic logic gates like AND, OR, NOR, NAND, etc.
+c) It also includes different flavours of same logic gates like-slow, medium and fast gates.
+![image](https://github.com/user-attachments/assets/53abe0cf-a235-42b1-a7fb-ca3971326fd9)
+
+**Why do we need different flavours of gates?**
+We know combinational delay in logic path determines the max speed of operation of digital logic circuit. </br>
+Tclk > Tcq_a + Tcomb + Tsetup_b
+We need cells that work fast to make Tcomb small.</br>
+![image](https://github.com/user-attachments/assets/4623831a-247e-43de-b231-c8d3b67855ec)
+But we also need slow cells.</br>
+
+### Sky130RTL D1SK3 L3 Introduction to Logic Synthesis part2
+**Why do we need slow cells?**
+Just like setup time we also have hold time. The FF_B should start after FF_A starts and not before. TO ensure that there are no "HOLD" issues at DFF_B, we need cells that work slowly.Hence we need cells that work fast to meet the setup requirement and cells that work slow to meed the hold requirements. The collection forms the `.lib`.</br>
+![image](https://github.com/user-attachments/assets/9191c60f-6c66-41ee-9684-c35960508a7c)
+
+**Faster vs Slower cells**
+![image](https://github.com/user-attachments/assets/1578a20f-e034-4827-8864-f45c01df0d75)
+
+**Selection of cells**
+![image](https://github.com/user-attachments/assets/aa1dd173-3b6e-4205-a298-16b32c0a328f)
+
+**Synthesis Illustration**
+First step a synthesiszer is going to do is a syntactical check and then it will start mapping the design. The module maps with the top level ports of the design.</br>
+
+```assign int = sel ? A : B;``` a Verilog continuous assignment using the ternary operator (? :), which is a shorthand way to write an if-else statement. If `sel` is 1, assign `A` to `int`; otherwise, assign `B` to `int`. It is basically describing a 2:1 multiplexer.
+Then there is a flop, where the output of mux is input of flip flop. The next code is for flip flop.</br>
+This is the coversion of RTL into netlist using gates available in the `.lib`. </br>
+
+![image](https://github.com/user-attachments/assets/7b4ce9ce-2872-47c6-9e60-a2f89624870a)
+
+## Labs using Yosys and Sy130 PDKs
+### Sky130RTL D1SK4 L1 Lab3 Yosys 1 good mux Part1
+Here we will see how to invoke Yosys and how to synthesize our designs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
