@@ -338,7 +338,7 @@ read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 ```
 ![image](https://github.com/user-attachments/assets/340032fa-4072-4f77-83de-f3f8e28c4172)
 
-* Next step is to read the design file, here we will read `goos_mux.v` design file</br>
+* Next step is to read the design file, here we will read `good_mux.v` design file</br>
 ```tcl
 read_verilog good_mux.v
 ```
@@ -394,7 +394,7 @@ We will now see how netlist looks like.</br>
 ## Introduction to timing .libs
 ### Sky130RTL D2SK1 L1 Lab4 Introduction to dot lib part1
 Here we will see what our libraries actually contain.
-1. To see what's inside the library
+ 1. To see what's inside the library
    ```tcl
    gvim ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
    ```
@@ -418,6 +418,47 @@ Here we will see what our libraries actually contain.
       1.80 Volts — the supply voltage during characterization
 
    * `.lib` → File extension for Liberty format, used by synthesis and timing analysis tools.
+
+ 2. When we look into a library, There are three crucial parameters to look into; P:Process, V:Voltage, T:Temperature.</br>
+    The variations in these parameters will decide how the 'Silicon' is going to work.
+
+### Sky130RTL D2SK1 L2 Lab4 Introduction to dot lib part2
+We will now see what are the different cells contained in the library.</br>
+
+![image](https://github.com/user-attachments/assets/58e544a4-d846-42ad-8610-7f94ef410d04)
+
+If we type `:/cell`, we will see what all cells are present. The different flavours of same cell, features of cells, leakage power and so on.</br>
+![image](https://github.com/user-attachments/assets/853878c7-7e69-4570-bcb0-f021f7a60613)
+
+To see the behavioral model of a specific cell, type the command:
+```tcl
+:sp ../verilog_model/sky130_fd_sc_hd__a211o.behavioral.v
+```
+### Sky130RTL D2SK1 L3 Lab4 Introduction to dot lib part3
+Let's check some other cells as well.</br>
+![image](https://github.com/user-attachments/assets/3355c47d-fe24-421d-8cf8-2cae87ba3ccb)
+
+We will look into the difference between `and2_0`, `and2_2` and `and2_4`:</br>
+It is actually the difference in 'area', 'power', 'delay'</br>
+**Area:** `and2_0` < `and2_2` < `and2_4` </br>
+**Delay:** `and2_0` > `and2_2` > `and2_4` </br>
+**Power:** `and2_0` < `and2_2` < `and2_4` </br>
+This shows that wider the area --> faster is the transistor --> and power consumed will also be more.</br>
+![Uploading image.png…]()
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
 
    
 
