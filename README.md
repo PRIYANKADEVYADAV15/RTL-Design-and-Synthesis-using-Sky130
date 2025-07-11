@@ -17,6 +17,12 @@
     - [Sky130RTL D1SK4 L2 Lab3 Yosys 1 good mux Part2](#Sky130RTL-D1SK4-L2-Lab3-Yosys-1-good-mux-Part2)
     - [Sky130RTL D1SK4 L3 Lab3 Yosys 1 good mux Part3](#Sky130RTL-D1SK4-L3-Lab3-Yosys-1-good-mux-Part3)
 
+- [Day-2-Timing Libs, hierarchical vs flat synthesis and efficient flop coding styles](#Day-2-Timing-Libs-hierarchical-vs-flat-synthesis-and-efficient-flop-coding-styles)
+  - [Introduction to timing .libs](#Introduction-to-timing-.libs)
+    - [Sky130RTL D2SK1 L1 Lab4 Introduction to dot lib part1](#Sky130RTL-D2SK1-L1-Lab4-Introduction-to-dot-lib-part1)
+    - [Sky130RTL D2SK1 L2 Lab4 Introduction to dot lib part2](#Sky130RTL-D2SK1-L2-Lab4-Introduction-to-dot-lib-part2)
+    - [Sky130RTL D2SK1 L3 Lab4 Introduction to dot lib part3](#Sky130RTL-D2SK1-L3-Lab4-Introduction-to-dot-lib-part3)
+
 # Day-1- Introduction to Verilog RTL design and Synthesis
 
 ## Introduction to open-source simulator iverilog
@@ -67,11 +73,11 @@ Here we will be looking at the environment setup which are needed for the course
    
 6) Install Required Tools:
    
-`sudo apt install iverilog`
+   `sudo apt install iverilog`
 
-`sudo apt install gtkwave`
+   `sudo apt install gtkwave`
 
-7)Inside the sky130RTLDesignAndSynthesisWorkshop folder, we have `verilog_files` is the folder which contains all the lab experiments which we will perform. Contains all the verilog source files, test bench files for the experiment.
+7) Inside the sky130RTLDesignAndSynthesisWorkshop folder, we have `verilog_files` is the folder which contains all the lab experiments which we will perform. Contains all the verilog source files, test bench files for the experiment.
 
 ![image](https://github.com/user-attachments/assets/18731d94-02ab-45e1-b1d7-6be8f897be0a)
 
@@ -280,31 +286,33 @@ Now to convert the RTL design into a digital logic circuit we need a Synthesizer
 * This is given out as a file called netlist.
 ![image](https://github.com/user-attachments/assets/663ff9cc-9dba-4525-8f31-db22002c3f02)
 
-**What is `.lib`?**
+**What is `.lib`?** </br>
 a) It is a collection of all logical modules and standard cells.
 b) It includes all basic logic gates like AND, OR, NOR, NAND, etc.
 c) It also includes different flavours of same logic gates like-slow, medium and fast gates.
 ![image](https://github.com/user-attachments/assets/53abe0cf-a235-42b1-a7fb-ca3971326fd9)
 
-**Why do we need different flavours of gates?**
+**Why do we need different flavours of gates?**</br>
 We know combinational delay in logic path determines the max speed of operation of digital logic circuit. </br>
 Tclk > Tcq_a + Tcomb + Tsetup_b
 We need cells that work fast to make Tcomb small.</br>
+
 ![image](https://github.com/user-attachments/assets/4623831a-247e-43de-b231-c8d3b67855ec)
+
 But we also need slow cells.</br>
 
 ### Sky130RTL D1SK3 L3 Introduction to Logic Synthesis part2
-**Why do we need slow cells?**
+**Why do we need slow cells?**</br>
 Just like setup time we also have hold time. The FF_B should start after FF_A starts and not before. TO ensure that there are no "HOLD" issues at DFF_B, we need cells that work slowly.Hence we need cells that work fast to meet the setup requirement and cells that work slow to meed the hold requirements. The collection forms the `.lib`.</br>
 ![image](https://github.com/user-attachments/assets/9191c60f-6c66-41ee-9684-c35960508a7c)
 
-**Faster vs Slower cells**
+**Faster vs Slower cells:**
 ![image](https://github.com/user-attachments/assets/1578a20f-e034-4827-8864-f45c01df0d75)
 
-**Selection of cells**
+**Selection of cells:**
 ![image](https://github.com/user-attachments/assets/aa1dd173-3b6e-4205-a298-16b32c0a328f)
 
-**Synthesis Illustration**
+**Synthesis Illustration:**</br>
 First step a synthesiszer is going to do is a syntactical check and then it will start mapping the design. The module maps with the top level ports of the design.</br>
 
 ```assign int = sel ? A : B;``` a Verilog continuous assignment using the ternary operator (? :), which is a shorthand way to write an if-else statement. If `sel` is 1, assign `A` to `int`; otherwise, assign `B` to `int`. It is basically describing a 2:1 multiplexer.
@@ -315,7 +323,117 @@ This is the coversion of RTL into netlist using gates available in the `.lib`. <
 
 ## Labs using Yosys and Sy130 PDKs
 ### Sky130RTL D1SK4 L1 Lab3 Yosys 1 good mux Part1
-Here we will see how to invoke Yosys and how to synthesize our designs.
+Here we will see how to invoke Yosys and how to synthesize our designs.</br>
+We will be reading the verilog files and .lib files, then at the output we will write the verilog files.</br>
+
+To invoke yosys; type `yosys`
+
+![image](https://github.com/user-attachments/assets/7b298397-fb4c-40d8-9890-5ba926c1b7bd)
+
+Inside the `sky130RTLDesignAndSynthesisWorkshop` folder we have `my_lib` file which includes all the library.</br>
+
+* Now inside Yosys we are going to read the library, the command for the same is:</br>
+```tcl
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+```
+![image](https://github.com/user-attachments/assets/340032fa-4072-4f77-83de-f3f8e28c4172)
+
+* Next step is to read the design file, here we will read `goos_mux.v` design file</br>
+```tcl
+read_verilog good_mux.v
+```
+![image](https://github.com/user-attachments/assets/fcf9bdcd-bf04-4277-a6b5-a4db399c046d)
+
+* command to write the module to synthesize
+```tcl
+synth -top good_mux
+```
+![image](https://github.com/user-attachments/assets/e6b57307-ac04-4b27-a198-72abccf8dc4b)
+![image](https://github.com/user-attachments/assets/cd98468c-fa73-470c-8eb7-8deec46c83fc)
+
+Now we have read the library and design, we will now generate the netlist.</br>
+* Generate the Netlist
+```tcl
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+# abc is the command which will convert our RTL into the gate level and what all logic circuits are required.
+```
+![image](https://github.com/user-attachments/assets/b0bc529a-675e-4d3a-b22d-c3a9048f8a5c)
+![image](https://github.com/user-attachments/assets/d956524a-4bac-42b3-b219-f8653ea6457b)
+
+We can see what all logic gates is has used, also the internal signals, input and output signals.
+
+To show the graphical version of logic it has realised, the command used is : `show`
+
+![image](https://github.com/user-attachments/assets/8cc2af11-0f29-4b32-9d1b-aec02f65344a)
+
+### Sky130RTL D1SK4 L2 Lab3 Yosys 1 good mux Part3
+We will now see how netlist looks like.</br>
+* Command to write the synthesized gate-level netlist
+  ```tcl
+  #It writes the synthesized gate-level netlist to a Verilog file named good_mux_netlist.v.
+  write_verilog good_mux_netlist.v
+  ```
+  ![image](https://github.com/user-attachments/assets/27b6b3c8-0447-4254-8ed1-fb55ca7ec538)
+
+* Open the file `good_mux_netlist.v` in the GVim text editor.
+  ```tcl
+  !gvim good_mux_netlist.v
+  ```
+  ![image](https://github.com/user-attachments/assets/09cf1b10-f0bf-4757-8782-fc06c4a3acb9)
+
+*Note: Here there are unnecessary attributes, so we will remove these by using the switch ```write_verilog -noattr good_mux_netlist.v```*.</br>
+
+* Simplified Netlist
+  ```tcl
+  !gvim good_mux_netlist.v
+  ```
+  ![image](https://github.com/user-attachments/assets/5aa03659-fdf2-47b6-80af-bf1d02851f23)
+
+
+# Day-2-Timing Libs, hierarchical vs flat synthesis and efficient flop coding styles
+## Introduction to timing .libs
+### Sky130RTL D2SK1 L1 Lab4 Introduction to dot lib part1
+Here we will see what our libraries actually contain.
+1. To see what's inside the library
+   ```tcl
+   gvim ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+   ```
+   ![image](https://github.com/user-attachments/assets/23b5b186-b752-4e8d-89c2-48e950a83095)
+
+   Let us breakdown `sky130_fd_sc_hd__tt_025C_1v80.lib` library:
+   * `sky130` → Refers to the SkyWater 130nm open-source process node.
+
+   * `fd_sc_hd` → Stands for:
+      `fd`: Foundry Design
+      `sc`: Standard Cells
+      `hd`: High Density (a variant optimized for smaller area)
+
+   * `tt` → Process corner:
+      `tt` = Typical-Typical (average manufacturing, average performance)
+     
+   * `025C` → Temperature:
+      25°C — standard room temperature
+
+   * `1v80` → Voltage:
+      1.80 Volts — the supply voltage during characterization
+
+   * `.lib` → File extension for Liberty format, used by synthesis and timing analysis tools.
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
