@@ -444,7 +444,8 @@ It is actually the difference in 'area', 'power', 'delay'</br>
 **Delay:** `and2_0` > `and2_2` > `and2_4` </br>
 **Power:** `and2_0` < `and2_2` < `and2_4` </br>
 This shows that wider the area --> faster is the transistor --> and power consumed will also be more.</br>
-![Uploading image.png…]()
+<img width="1918" height="971" alt="image" src="https://github.com/user-attachments/assets/d34b44a9-b6cd-438a-bddb-09e2a652d0ef" />
+
 
 
 
