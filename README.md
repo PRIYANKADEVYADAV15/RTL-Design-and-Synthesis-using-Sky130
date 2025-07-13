@@ -467,6 +467,26 @@ The files which we will be discussing here `multiple_modules.v`, inside `/VLSI/s
   2) ```read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib```
   3) ```read_verilog multiple_modules.v```
   4) ```synth -top multiple_modules```
+     <img width="1918" height="1028" alt="image" src="https://github.com/user-attachments/assets/719ca34c-95fc-4074-9fa4-146f8cc46232" />
+     
+     We can see the report here which shows sub_module 1 has 1 AND gate, sub_module 2 has 1 OR gate and overall there 2 gates.</br>
+
+     <img width="1918" height="1023" alt="image" src="https://github.com/user-attachments/assets/e109e1df-82a5-4f3b-bc38-e0eb40274014" />
+
+     <img width="1916" height="1023" alt="image" src="https://github.com/user-attachments/assets/96b05aa3-1d8f-4b0c-8e58-a17ea9382039" />
+
+  5) ```tcl
+     # we will link design to library
+     abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+     ```
+  6) ```tcl
+     # we will see the design as shown in the above figure
+     show multiple_modules
+     ```
+
+
+     
+
 
 
 
