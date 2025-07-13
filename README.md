@@ -483,6 +483,69 @@ The files which we will be discussing here `multiple_modules.v`, inside `/VLSI/s
      # we will see the design as shown in the above figure
      show multiple_modules
      ```
+     
+     <img width="1918" height="1016" alt="image" src="https://github.com/user-attachments/assets/445e5a41-3b04-46cc-8c30-b98f1c5132d7" />
+
+     *Note: We will not see the AND / OR gates, we will just see sub_module 1 and sub_module 2*</br>
+     This is what we called **Hierarchical Synthesis**.</br>
+
+  7) ```tcl
+     # we will write the netlist with -noattr
+     write_verilog -noattr multiple_modules_hier.v
+     ```
+  8) ```tcl
+     # we will see how the netlist looks like
+     !gvim multiple_modules_hier.v
+     ```
+
+     <img width="1918" height="1032" alt="image" src="https://github.com/user-attachments/assets/f0a0fb1a-10f5-41e4-9ef3-a75689bb5630" />
+
+     <img width="1918" height="1027" alt="image" src="https://github.com/user-attachments/assets/bc5d4c6d-b9f5-46f1-adb5-4b609c9d82c6" />
+
+     We can see here the Hierarchies are preserved.</br>
+
+### Sky130RTL D2SK2 L2 Lab5 Hier Synthesis vs Flat Synthesis part2
+Till now we have discussed what actually hierarchy is, now we will do `flatten`. This command Merge all instantiated submodules into the top module, so the design becomes a single-level netlist with no hierarchy.</br>
+If your top-level module instantiates other modules inside it (like reusable components), `flatten` will:</br>
+* Pull all submodule logic directly into the top-level
+* Remove all module boundaries
+* Make it one flat, big module with just gates and wires
+
+We will use the following commands;
+* ```tcl
+  # to flat the netlist
+  flatten
+  ```
+* ```tcl
+  write_verilog -noattr multiple_modules_flat.v
+  ```
+* ```tcl
+  !gvim multiple_modules_flat.v
+  ```
+
+  <img width="1917" height="1027" alt="image" src="https://github.com/user-attachments/assets/ea97042b-f5ee-4b7d-8223-83da594eea9c" />
+
+  <img width="1918" height="1028" alt="image" src="https://github.com/user-attachments/assets/d794b8dc-f964-4341-be76-db459c61c5f1" />
+
+  Let's do the comparison with Hierarchical synthesis.</br>
+  Here we can see that there is no hierarchy, it is flattened out. There is no sub_modules and  direct instantiation of AND, OR gate.</br>
+
+  <img width="1912" height="1018" alt="image" src="https://github.com/user-attachments/assets/2053fa5d-23b5-4cb2-80fa-095ade79e2a9" />
+
+Now if I have multiple modules and I want to synthesize sub modules, then how to do it?
+
+
+  
+
+
+
+
+
+
+     
+
+     
+
 
 
      
