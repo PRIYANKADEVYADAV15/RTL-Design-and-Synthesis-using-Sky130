@@ -22,6 +22,9 @@
     - [Sky130RTL D2SK1 L1 Lab4 Introduction to dot lib part1](#Sky130RTL-D2SK1-L1-Lab4-Introduction-to-dot-lib-part1)
     - [Sky130RTL D2SK1 L2 Lab4 Introduction to dot lib part2](#Sky130RTL-D2SK1-L2-Lab4-Introduction-to-dot-lib-part2)
     - [Sky130RTL D2SK1 L3 Lab4 Introduction to dot lib part3](#Sky130RTL-D2SK1-L3-Lab4-Introduction-to-dot-lib-part3)
+  - [Hierarchical vs Flat Synthesis](#Hierarchical-vs-Flat-Synthesis)
+    - [Sky130RTL D2SK2 L1 Lab5 Hier Synthesis vs Flat Synthesis part1](#Sky130RTL-D2SK2-L1-Lab5-Hier-Synthesis-vs-Flat-Synthesis-part1)
+    - [Sky130RTL D2SK2 L2 Lab5 Hier Synthesis vs Flat Synthesis part2](#Sky130RTL-D2SK2-L2-Lab5-Hier-Synthesis-vs-Flat-Synthesis-part2)
 
 # Day-1- Introduction to Verilog RTL design and Synthesis
 
@@ -445,6 +448,32 @@ It is actually the difference in 'area', 'power', 'delay'</br>
 **Power:** `and2_0` < `and2_2` < `and2_4` </br>
 This shows that wider the area --> faster is the transistor --> and power consumed will also be more.</br>
 <img width="1918" height="971" alt="image" src="https://github.com/user-attachments/assets/d34b44a9-b6cd-438a-bddb-09e2a652d0ef" />
+
+## Hierarchical vs Flat Synthesis
+### Sky130RTL D2SK2 L1 Lab5 Hier Synthesis vs Flat Synthesis part1
+We will see in this lab what is Hierarchical and Flat synthesis</br>
+The files which we will be discussing here `multiple_modules.v`, inside `/VLSI/sky130RTLDesignAndSynthesisWorkshop/verilog_files/`
+* ```tcl
+  gvim multiple_modules.v
+  ```
+  <img width="1918" height="1030" alt="image" src="https://github.com/user-attachments/assets/abdf7f7a-b43a-48f7-b5fe-e73e5ad833c9" />
+  
+  Here we have sub_module 1 which is an AND gate and sub_module 2 which is an Or gate. U1 has inputs 'a' and 'b' and output as 'net1', which is input to U2 OR c and    output of OR gate is output of multiple_modules as shown below.</br>
+  
+  <img width="556" height="322" alt="image" src="https://github.com/user-attachments/assets/f96f86b6-0f14-4883-8bd3-5ec109b5c265" />
+
+* Let's do the synthesis. Type commands as shown below;
+  1) ```yosys```
+  2) ```read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib```
+  3) ```read_verilog multiple_modules.v```
+  4) ```synth -top multiple_modules```
+
+
+
+
+
+
+
 
 
 
