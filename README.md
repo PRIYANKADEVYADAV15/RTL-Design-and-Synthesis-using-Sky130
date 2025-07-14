@@ -640,12 +640,142 @@ Below is the image of all 4 together.</br>
 
 Above shows the asynch and synch_reset, only asynch_reset and only synch_reset.</br>
 
-### Lab Flop synthesis simulations part1
+### Sky130RTL D2SK3 L3 Lab Flop synthesis simulations part1
 
 Here we will simulate all the flops discussed above and see how they behave.</br>
 We will be dealing with `dff` files here</br>
 
 <img width="1918" height="1032" alt="image" src="https://github.com/user-attachments/assets/81ed093c-0d49-4442-bde8-4654e977a64b" />
+
+Write the following steps to get the waveform of `asynch_reset`:
+* ```tcl
+  iverilog dff_asyncres.v tb_dff_asyncres.v
+  ```
+* ```tcl
+  ./a.out
+  ```
+* ```tcl
+  gtkwave tb_asyncres.vcd
+  ```
+  <img width="1918" height="1047" alt="image" src="https://github.com/user-attachments/assets/78045733-b898-445c-89a2-fe6a8f36bf69" />
+
+  We can clearly see in the waveform, the moment `async_reset = 1`, irrespective of `clk`, `q = 0`. </br>
+
+* ```tcl
+     #Now we will into the file below and follow the similar steps
+     dff_async_set.v
+  ```
+  Here we can see that output `q` becomes `1` only when `async_set = 1`.</br>
+  
+  At `async_set = 0` , the changes in `d` are looked upon by output `q` only on positive clock edge. When `d = 0` on clock edge `q = 0` and similarly for `d = 1`, `q   = 1`</br>
+
+  <img width="1916" height="1020" alt="image" src="https://github.com/user-attachments/assets/8220ffde-8b04-4f13-a5d7-f78cea891ff5" />
+
+  At `async_set = 1`, the changes in output are not virtue of changes in `clk` or `d` it only depends on `async_set`.
+  <img width="1918" height="1028" alt="image" src="https://github.com/user-attachments/assets/fee69ebe-7e05-4fe1-8327-b1077477f505" />
+
+Now look at the `sync_reset` behaviour </br>
+* ```tcl
+  iverilog dff_syncres.v tb_dff_syncres.v
+  ```
+* ```tcl
+  ./a.out
+  ```
+* ```tcl
+  gtkwave tb_syncres.vcd
+  ```
+  Here we can see that even though the `sync_reset = 1`, the output `q` goes to `0` only when the clock edge is positive.This shows that synchronous flop depends on clock edge.</br>
+  <img width="1913" height="1020" alt="image" src="https://github.com/user-attachments/assets/76dae253-7c39-47e6-9dbb-5f2126eb6ee0" />
+
+
+### Sky130RTL D2SK3 L4 Lab Flop synthesis simulations part2
+**Now we will synthesize these three circuits**.</br>
+* ```tcl
+  read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  read_verilog dff_asyncres.v
+  ```
+* ```tcl
+  synth -top dff_asyncres
+  ```
+<img width="1920" height="993" alt="image" src="https://github.com/user-attachments/assets/bd71de70-145e-43ac-a75b-94aeb986f1f4" />
+
+Since, we are using D-flip flops we are supposed to use keyword `dfflibmap`. As in the flow they will keep a separate flop library and standard cell library so we need to tell the tool where to pick D-FF design from. This will only look for `dff` flops. br>
+* ```tcl
+  dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+
+<img width="1912" height="992" alt="image" src="https://github.com/user-attachments/assets/1b4674d7-9b45-43f2-b938-2f422941284b" />
+
+* ```tcl
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  show
+  ```
+  <img width="1916" height="1022" alt="image" src="https://github.com/user-attachments/assets/8d7a754a-c1d0-4127-a9d9-d612b2a7ff64" />
+
+**Next, we will synthesize `async_set` and following the same steps as before**.</br>
+
+<img width="1917" height="1047" alt="image" src="https://github.com/user-attachments/assets/8189c351-88e6-4cf3-8ed7-35ba73fca4d3" />
+
+**Now, let's look into `syncres.v`.** </br>
+
+<img width="1918" height="1027" alt="image" src="https://github.com/user-attachments/assets/698a1f8c-4832-4845-a137-830ed6ee03b5" />
+
+### Sky130RTL D2SK3 L5 Interesting Optimizations part1
+We will see some interesting optimization.</br>
+Let us look at the RTL code into the RTL files.</br>
+
+```gvim mult_*.v -o```
+
+<img width="1918" height="1021" alt="image" src="https://github.com/user-attachments/assets/87664284-1278-4309-b40e-1d182ffcdbaa" />
+
+These are the two RTL files we are going to see, 'mult2' and 'mult8'.</br>
+Now if see module mult2, it is a 3 pin input and generating a 4 pin output. Where the relation between input and output is `y = a*2`.</br>
+If we write down the bits of input and output, we will see that at the output; y(3)=a(2); y(2)=a(1); y(1)=a(0) and y(0)=0{appending one 0}. Similarly for multiplying a number with 4 is the number itself plus appended zeros, for multiplying with 8 append 3 zeros and so on...</br>
+
+<img width="886" height="492" alt="image" src="https://github.com/user-attachments/assets/1be10823-891b-4e38-aa48-b35241827a28" />
+
+So we can see that we actually don't need any external hardware, that means multiplying with 2 or powers of 2 is just shifting the digits.</br>
+
+Now let's do the synthesis;
+1) ```read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib```
+2) ```read_verilog mult_2.v```
+3) ```synth -top mul2```
+   Here we have inferred no memories, no cells
+   <img width="1918" height="1038" alt="image" src="https://github.com/user-attachments/assets/88887a28-8d88-4a4b-8f8c-1739e8aefce6" />
+4) ```abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib```
+   As there is nothing to synthesize, so it will show nothing to map.
+5) ```show```
+   <img width="1918" height="1038" alt="image" src="https://github.com/user-attachments/assets/e61cf19a-3c31-430d-bf1d-a04302a8b14e" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+
+
+  
+
+
+
 
 
 
