@@ -25,6 +25,13 @@
   - [Hierarchical vs Flat Synthesis](#Hierarchical-vs-Flat-Synthesis)
     - [Sky130RTL D2SK2 L1 Lab5 Hier Synthesis vs Flat Synthesis part1](#Sky130RTL-D2SK2-L1-Lab5-Hier-Synthesis-vs-Flat-Synthesis-part1)
     - [Sky130RTL D2SK2 L2 Lab5 Hier Synthesis vs Flat Synthesis part2](#Sky130RTL-D2SK2-L2-Lab5-Hier-Synthesis-vs-Flat-Synthesis-part2)
+  - [Various Flop calling Styles and Optimization](#Various-Flop-calling-Styles-and-Optimization)
+    - [Sky130RTL D2SK3 L1 Why flops and flop coding styles part1](#Sky130RTL-D2SK3-L1-Why-flops-and-flop-coding-styles-part1)
+    - [Sky130RTL D2SK3 L2 Why flops and flop coding styles part2](#Sky130RTL-D2SK3-L1-Why-flops-and-flop-coding-styles-part2)
+    - [Sky130RTL D2SK3 L3  Flop synthesis simulations part1](#Sky130RTL-D2SK3-L3-Lab-flop-synthesis-simulations-part1)
+    - [Sky130RTL D2SK3 L4  Flop synthesis simulations part2](#Sky130RTL-D2SK3-L4-Lab-flop-synthesis-simulations-part2)
+    - [Sky130RTL D2SK3 L5 Interesting Optimizations part1](#Sky130RTL-D2SK3-L5-Interesting-Optimizations-part1)
+    - [Sky130RTL D2SK3 L6 Interesting Optimizations part2](#Sky130RTL-D2SK3-L6-Interesting-Optimizations-part2)
 
 # Day-1- Introduction to Verilog RTL design and Synthesis
 
@@ -531,8 +538,97 @@ We will use the following commands;
   Here we can see that there is no hierarchy, it is flattened out. There is no sub_modules and  direct instantiation of AND, OR gate.</br>
 
   <img width="1912" height="1018" alt="image" src="https://github.com/user-attachments/assets/2053fa5d-23b5-4cb2-80fa-095ade79e2a9" />
+* ```tcl
+  # to see how the layout looks like after flattening
+  show
+  ```
+  After flattening we will not see u1 and u2 and sub_modules.</br>
+  
+  <img width="1915" height="1047" alt="image" src="https://github.com/user-attachments/assets/7ff448b9-dbb3-4f49-85a0-7c6e3811adbb" />
+
 
 Now if I have multiple modules and I want to synthesize sub modules, then how to do it?
+
+**Sub_modules level synthesis**
+
+* ```yosys```
+* ```read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib```
+* ```read_verilog multiple_modules.v```
+* ```tcl
+  # Since we are synthesising onlu sub modules and not multiple modules
+  synth -top sub_module1
+  ```
+  <img width="1920" height="1035" alt="image" src="https://github.com/user-attachments/assets/f125cb7b-5b62-4263-b040-244c0c7dab76" />
+
+* ```tcl
+  # link the design
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  show
+  ```
+  We will see only the AND gate, which is present in sub_module1.</br>
+  
+  <img width="1917" height="1026" alt="image" src="https://github.com/user-attachments/assets/0cd0fccc-a231-49c0-90b0-e2c8315275da" />
+
+  Why do we prefer module level synthesis?
+  1) When we have multiple instantiation of same module module level synthesis becomes easy as we don't need to instantiate the same module many a times.</br>
+  
+  2) Divide and Conquer- This technique is used in Massive design. When we give the entire design to a tool, but tool is not doing a good job, So instead of giving       the entire massive design to tool we will give one by one portion. By doing this the entire design is optimized and we get the best netlist.
+
+  So, to control which module we want, the command we use is: ```synth -top $module_name```.
+
+
+## Various Flop Calling Styles and Optimization
+### Sky130RTL D2SK3 L1 Why flops and flop coding styles part1
+
+We will study here how to code a flop and what are the different possible flops available.</br>
+Why do we need Flops, We know when there is a combinational circuit and there is input signal given there will be "Glitch" at the output. For many combinational circuits there will be further more glitches.And for continuous combinational circuits the output will never settle down, it will be always glitchy. To avoid this we need an element to store the value, it is called "FLOP".</br>
+
+We will use the flops in between the combinational circuit to stabilize the output even after the glitches, the output of the flop will remain constant. This is the main purpose of using flops in digital circuit.</br>
+Also we need to initialize the flops for that we have 'Set' and 'Reset' which can be Synchronous and Asynchronous.</br>
+
+<img width="1228" height="653" alt="image" src="https://github.com/user-attachments/assets/a1fda91f-189f-41b5-b9b2-eadfac8600d0" />
+
+### Sky130RTL D2SK3 L2 Why flops and flop coding styles part2
+
+<img width="1918" height="998" alt="image" src="https://github.com/user-attachments/assets/826ba4c1-2917-4a57-94ee-ec67c41770eb" />
+
+Above code is D-flop code for both asynchronous and synchronous reset. `always` at posedge clk signifies a posedge flipflop; posedge of asynchronous.</br>
+`if` has ore priority than `else` part, First looking for asynchrnous clock. Let's breakdown one by one each line</br>
+
+* `module dff_asyncres_syncres (...)`
+   * Declares a module named dff_asyncres_syncres.
+   * Inputs:
+      `clk`: Clock signal.
+      `async_reset`: Asynchronous reset signal.
+      `sync_reset`: Synchronous reset signal.
+      `d`: Input data to the D flip-flop.
+   * Output:
+      `q`: Output of the flip-flop (declared as `reg` because it's assigned inside an `always` block).
+
+* `always @ (posedge clk , posedge async_reset)`
+   This block is triggered on:
+  * A rising edge of the clock (`posedge clk`) — used for synchronous behavior.
+  * A rising edge of `async_reset` — used for immediate (asynchronous) reset.
+
+This is a standard pattern for flip-flops that require both asynchronous and synchronous control.
+
+* `if (async_reset)`
+  If the asynchronous reset is triggered, `q` is set to `0` immediately, ignoring the clock.
+
+* `else if (sync_reset)`
+  If `async_reset` is not active, but `sync_reset` is high on the rising edge of the clock, then `q` is also set to `0`.
+
+* `else q <= d;`
+  If neither reset is active, the D flip-flop captures the input `d` on the rising edge of the clock.
+
+
+
+
+  
+
+
 
 
   
