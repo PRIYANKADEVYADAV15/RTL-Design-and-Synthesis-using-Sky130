@@ -28,8 +28,8 @@
   - [Various Flop calling Styles and Optimization](#Various-Flop-calling-Styles-and-Optimization)
     - [Sky130RTL D2SK3 L1 Why flops and flop coding styles part1](#Sky130RTL-D2SK3-L1-Why-flops-and-flop-coding-styles-part1)
     - [Sky130RTL D2SK3 L2 Why flops and flop coding styles part2](#Sky130RTL-D2SK3-L1-Why-flops-and-flop-coding-styles-part2)
-    - [Sky130RTL D2SK3 L3  Flop synthesis simulations part1](#Sky130RTL-D2SK3-L3-Lab-flop-synthesis-simulations-part1)
-    - [Sky130RTL D2SK3 L4  Flop synthesis simulations part2](#Sky130RTL-D2SK3-L4-Lab-flop-synthesis-simulations-part2)
+    - [Sky130RTL D2SK3 L3 Lab Flop synthesis simulations part1](#Sky130RTL-D2SK3-L3-Lab-flop-synthesis-simulations-part1)
+    - [Sky130RTL D2SK3 L4 Lab Flop synthesis simulations part2](#Sky130RTL-D2SK3-L4-Lab-flop-synthesis-simulations-part2)
     - [Sky130RTL D2SK3 L5 Interesting Optimizations part1](#Sky130RTL-D2SK3-L5-Interesting-Optimizations-part1)
     - [Sky130RTL D2SK3 L6 Interesting Optimizations part2](#Sky130RTL-D2SK3-L6-Interesting-Optimizations-part2)
 
@@ -623,10 +623,39 @@ This is a standard pattern for flip-flops that require both asynchronous and syn
 * `else q <= d;`
   If neither reset is active, the D flip-flop captures the input `d` on the rising edge of the clock.
 
+  This is an asynchronous reset, we entered into this loop because of posedge of edge. Only in case of posedge we can enter into `always` block. Circuit is getting sensitive to positive edge of clock. upon positive edge `q` is getting `d`. It is an asynchronous reset because it does not awaits for clock. If I apply `reset` at any point. the output will go low irrespective of `q` value. </br>
+
+  <img width="1238" height="631" alt="image" src="https://github.com/user-attachments/assets/e741dac9-4d79-45ff-a3d3-0254218162f6" />
+
+If we talk about `asynch_set`; "Set" means setting the output `q` to logic `1`.Asynchronous" means this happens immediately when `async_set` goes high, regardless of the clock. The presence of async_set in the sensitivity list `(always @(posedge clk, posedge async_set`)) makes it asynchronous.</br>
+
+<img width="1918" height="1030" alt="image" src="https://github.com/user-attachments/assets/949e6cf2-19cc-4a55-ae6f-8867ff6c781a" />
+
+Now talking about `synch_reset`, A synchronous reset is a reset signal that only affects the output during the active clock edge (typically rising edge). This means the reset signal is checked along with the clock.When posedge clock is given and `synch_reset` is 1, then output `q` will set to `0`.
+
+Below is the image of all 4 together.</br>
+<img width="1918" height="1023" alt="image" src="https://github.com/user-attachments/assets/aff2dc7d-0f82-416c-9cbb-fecbdf4aaa5c" />
+
+<img width="1213" height="517" alt="image" src="https://github.com/user-attachments/assets/cf34d2b2-6841-4a69-8bb4-1d1295c85d32" />
+
+Above shows the asynch and synch_reset, only asynch_reset and only synch_reset.</br>
+
+### Lab Flop synthesis simulations part1
+
+Here we will simulate all the flops discussed above and see how they behave.</br>
+We will be dealing with `dff` files here</br>
+
+<img width="1918" height="1032" alt="image" src="https://github.com/user-attachments/assets/81ed093c-0d49-4442-bde8-4654e977a64b" />
 
 
 
-  
+
+
+
+
+
+
+
 
 
 
