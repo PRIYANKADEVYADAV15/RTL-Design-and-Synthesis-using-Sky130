@@ -745,11 +745,38 @@ Now let's do the synthesis;
 2) ```read_verilog mult_2.v```
 3) ```synth -top mul2```
    Here we have inferred no memories, no cells
+   
    <img width="1918" height="1038" alt="image" src="https://github.com/user-attachments/assets/88887a28-8d88-4a4b-8f8c-1739e8aefce6" />
-4) ```abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib```
+5) ```abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib```
    As there is nothing to synthesize, so it will show nothing to map.
-5) ```show```
+   
+7) ```show```
+
    <img width="1918" height="1038" alt="image" src="https://github.com/user-attachments/assets/e61cf19a-3c31-430d-bf1d-a04302a8b14e" />
+
+   We got the number 'a' appended with zero {a,0}, this is what we expected.</br>
+
+
+### Sky130RTL D2SK3 L6 Interesting Optimizations part2
+Let us take another special case:
+Input a[2:0] and output y[5:0]. The relation between the two is such that</br>
+
+```tcl
+a*9 = y;
+a*(8+1) = y;
+a*8 +a*1 = y
+```
+We have already seen a * 8 which is [a,0,0,0]. So, now a * 9 will be as follows;
+
+<img width="643" height="355" alt="image" src="https://github.com/user-attachments/assets/2b576399-8fe7-4fde-85ae-5d8b236e9d92" />
+
+
+
+
+
+
+
+   
 
 
 
