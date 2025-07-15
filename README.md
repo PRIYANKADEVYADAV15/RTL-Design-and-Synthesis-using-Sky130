@@ -33,6 +33,12 @@
     - [Sky130RTL D2SK3 L5 Interesting Optimizations part1](#Sky130RTL-D2SK3-L5-Interesting-Optimizations-part1)
     - [Sky130RTL D2SK3 L6 Interesting Optimizations part2](#Sky130RTL-D2SK3-L6-Interesting-Optimizations-part2)
 
+- [Day-3-Combinatinal and Sequential Optimizations](#Day-3-Combinatinal-and-Sequential-Optimizations)
+  - [Introduction to Optimization](#Introduction-to-Optimization)
+    - [Sky130RTL D2SK1 L1 Introduction to Optimization part1](#Sky130RTL-D2SK1-L1-Introduction-to-Optimization-part1)
+    - [Sky130RTL D2SK1 L2 Introduction to Optimization part2](#Sky130RTL-D2SK1-L2-Introduction-to-Optimization-part2)
+    - [Sky130RTL D2SK1 L3 Introduction to Optimization part3](#Sky130RTL-D2SK1-L3-Introduction-to-Optimization-part3)
+
 # Day-1- Introduction to Verilog RTL design and Synthesis
 
 ## Introduction to open-source simulator iverilog
@@ -769,6 +775,138 @@ a*8 +a*1 = y
 We have already seen a * 8 which is [a,0,0,0]. So, now a * 9 will be as follows;
 
 <img width="643" height="355" alt="image" src="https://github.com/user-attachments/assets/2b576399-8fe7-4fde-85ae-5d8b236e9d92" />
+
+So, y will have two replicas of a--> [a,a]. Also we don't need any external hardware. The connections will be as shown below</br>
+
+<img width="637" height="351" alt="image" src="https://github.com/user-attachments/assets/1cf82a98-fa99-4171-9580-67788cb50aa4" />
+
+Let us execute this optimization</br>
+
+* ```tcl
+  # first write the netlist
+  write_verilog -noattr mul2_net.v
+  ```
+* ```tcl
+  # look at the netlist
+  !gvim mul2_net.v
+  ```
+
+  <img width="1916" height="991" alt="image" src="https://github.com/user-attachments/assets/1138fcd5-e7a9-4722-a65c-e70996628f6a" />
+
+  Now let us go to our next example `mult8`.
+
+* ```tcl
+  read_verilog mult_8.v
+  ```
+* ```tcl
+  synth -top mult8
+* ```tcl
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  show
+  ```
+
+  <img width="1913" height="1022" alt="image" src="https://github.com/user-attachments/assets/3b681170-9c4f-4551-b1cd-53251464ec66" />
+
+* ```tcl
+  # look at the netlist
+  write_verilog -noattr mult8_net.v
+  ```
+* ```tcl
+  !gvim mult8_net.v
+  ```
+
+  <img width="1918" height="991" alt="image" src="https://github.com/user-attachments/assets/f1835eb8-fb65-459d-a8ce-7e28b8477d2e" />
+
+
+# Day-3-Combinatinal and Sequential Optimizations
+## Introduction to Optimization
+### Sky130RTL D2SK1 L1 Introduction to Optimization part1
+We know in Digital circuits, we have two types pf logic circuits namely 'Combinational' and 'Sequential' logical circuits.</br>
+Here we will first dicuss about  'Combinational logic Optimizations'.</br>
+
+**Why do we need logic optimizations?**
+
+<img width="912" height="452" alt="image" src="https://github.com/user-attachments/assets/cb5c4653-ea39-41a4-95e2-b5d05698177d" />
+
+Let us consider the example shown below;
+
+<img width="972" height="473" alt="image" src="https://github.com/user-attachments/assets/82645755-6cbb-4739-8e7a-0f2a18fb540d" />
+
+Here if we realise the output, at A=0 we get output as C', which can be realised simply by using an 'Inverter' .</br>
+If we realise this using Cmos, above circuit needs 6 Cmos transistors whereas an Inverter needs only 2. So, this is an example of logic circuit optimization.</br>
+
+<img width="1186" height="632" alt="image" src="https://github.com/user-attachments/assets/47b8db88-2127-4551-bde0-49d7c355fae8" />
+
+Now let us look at **Boolean Logical Optimization** as given;
+`assign y = a?(b?c:(c?a:0)):(!c)`
+
+This expression is of a multiplexer, it is in the form a?((a=1):(a=0))</br>
+
+<img width="852" height="467" alt="image" src="https://github.com/user-attachments/assets/49baced3-bbac-4d36-aaea-c8f671b38423" />
+
+But this is not the optimized circuit, let's optimize it. We will solve the boolean Expression and get the required expression.</br>
+
+<img width="1147" height="540" alt="image" src="https://github.com/user-attachments/assets/aa454bbc-4dfa-4f5c-8ea0-7ec72d00bb37" />
+
+
+### Sky130RTL D2SK1 L2 Introduction to Optimization part2
+Now let us look at **Sequential Logic Optimization** Techniques; It is of two types: Basic and Advanced.
+
+<img width="1045" height="467" alt="image" src="https://github.com/user-attachments/assets/d7e34bca-8739-49b1-bfdb-378f8cb6b869" />
+
+Let's start with **Sequential Constant Propagation** 
+Say, I have a Flop, with `clk` and `D` input tied low with `Reset` connected to it. Is there any way `Q` can become '1'..?
+
+If RST = 0; Q = 0
+
+ RST not equal to 0; Then also Q = 0 because D = 0 always.
+ 
+ So o/p becomes '1' always irrespective of clk, Reset, Q or A. This happens because of 'Sequential Constant Propagation'.</br>
+
+ <img width="1107" height="465" alt="image" src="https://github.com/user-attachments/assets/313b9e80-7479-4a97-a79a-644daf42a42a" />
+
+ Let's say i have a 'Set' clock connected now and rest of logic is same.</br>
+ If Set = 1; Q = 1</br>
+ If Set is not equal to 1; clk is given; Q = 0</br>
+
+ Now can we say Q = Set ?
+
+ Let's draw the waveform of clock, SET and Q. As shown below we can see there is clock cycle delay. </br>
+ Q goes '1' asynchronously but Q goes '0' synchronous to the clock. So we cannot say Q = SET. Therefore, this logic cannot be optimized as the set has to be retained and for the FLop to be sequential constant 'Q' pin should always be a constant value.</br> 
+
+ <img width="942" height="333" alt="image" src="https://github.com/user-attachments/assets/99476f9c-27e3-4e0c-b872-ac2163760bd0" />
+
+### Sky130RTL D2SK1 L3 Introduction to Optimization part3
+We will now study about other types of optimization techniques such as; **State optimization**
+
+ 
+
+
+ 
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
