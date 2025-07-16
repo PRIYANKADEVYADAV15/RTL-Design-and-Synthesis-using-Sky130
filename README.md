@@ -957,6 +957,54 @@ We are expecting a 3 input AND gate here.
 
 Similarly we will check for ```opt_check4.v```
 
+<img width="1918" height="1045" alt="image" src="https://github.com/user-attachments/assets/426c0a89-4c3d-402c-9c5d-78e13611aacd" />
+
+We are expecting an EXNOR gate here.
+
+<img width="1907" height="1043" alt="image" src="https://github.com/user-attachments/assets/5b6e412e-a8c9-471e-879d-bc20cbb45544" />
+
+Now we will check the ```multiple_module_opt*``` file.
+
+<img width="1925" height="1040" alt="image" src="https://github.com/user-attachments/assets/8a69a5fd-3372-4fae-a7ed-24a51a21c286" />
+
+<img width="1918" height="1022" alt="image" src="https://github.com/user-attachments/assets/ebd76c91-6d02-4bdc-ad13-56d764c14500" />
+
+We need to follow the following steps:
+
+* ```tcl
+  read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  read_verilog multiple_module_opt.v
+  ```
+* ```tcl
+  synth -top multiple_module_opt
+  ```
+* ```tcl
+  flatten
+  ```
+* ```tcl
+  write_verilog -noattr multiple_module_opt.v
+  ```
+* ```tcl
+  opt_clean -purge
+  ```
+* ```tcl
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  show
+  ```
+  
+<img width="1917" height="1050" alt="image" src="https://github.com/user-attachments/assets/ea21b49c-f13a-42fe-b74b-39a04a2c4547" />
+
+
+
+
+
+
+
+
 
 
 
