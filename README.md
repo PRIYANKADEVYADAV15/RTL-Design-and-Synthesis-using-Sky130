@@ -1167,7 +1167,7 @@ Therefore here all the bits are in use, whereas in previous case only one of the
 ## If Case constructs
 ### Sky130RTL D5SK1 L1 IF CASE Constructs part1
 Here we will see about **'IF'** and **'CASE'** statements and danger with 'CASE' statements.</br>
-**if**: 
+1) **if**: 
 * It gives the priority logic
 * Evaluates sequentially: top-to-bottom priority
 * Syntax:
@@ -1181,6 +1181,28 @@ Here we will see about **'IF'** and **'CASE'** statements and danger with 'CASE'
        statement;
    end
   ```
+  The top condition is of highest priority.</br>
+  ```tcl
+  if (condition1)
+       statement;
+  else if (condition2)
+        c1;
+  else if (condition2)
+        c2;
+  else if(condition3)
+        c3;
+  else (condition)
+        E;
+  end
+  ```
+  The priority order is condition1 > condition2 > condition3. So the hardware implementation will be as shown below.</br>
+
+  <img width="348" height="287" alt="image" src="https://github.com/user-attachments/assets/ba75e54f-1208-4e9a-9bb3-ee1389186c9b" />
+
+  **Danger with 'if'**:
+  
+
+   
   
 
 
