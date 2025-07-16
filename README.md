@@ -40,7 +40,13 @@
     - [Sky130RTL D3SK1 L3 Introduction to Optimization part3](#Sky130RTL-D2SK1-L3-Introduction-to-Optimization-part3)
   - [Combinational Logic Optimizations](#Combinational-Logic-Optimizations)
     - [Sky130RTL D3SK2 L1 Lab06 Combinatioanl Logic Optimization part1](#Sky130RTL-D2SK2-L1-Lab06-Combinatioanl-Logic-Optimization-part1)
-    - [Sky130RTL D3SK2 L2 Lab07 Combinatioanl Logic Optimization part2](#Sky130RTL-D2SK2-L2-Lab07-Combinatioanl-Logic-Optimization-part2)
+    - [Sky130RTL D3SK2 L2 Lab06 Combinatioanl Logic Optimization part2](#Sky130RTL-D2SK2-L2-Lab07-Combinatioanl-Logic-Optimization-part2)
+  - [Sequential Logic optimizations](#Sequential-Logic-optimizations)
+    - [Sky130RTL D3SK3 L1 Lab07 Sequential Logic Optimization part1](#Sky130RTL-D3SK3-L1-Lab07-Sequential-Logic-Optimization-part1)
+    - [Sky130RTL D3SK3 L2 Lab07 Sequential Logic Optimization part2](#Sky130RTL-D3SK3-L2-Lab07-Sequential-Logic-Optimization-part2)
+    - [Sky130RTL D3SK3 L3 Lab07 Sequential Logic Optimization part3](#Sky130RTL-D3SK3-L3-Lab07-Sequential-Logic-Optimization-part3)
+
+      
 
 # Day-1- Introduction to Verilog RTL design and Synthesis
 
@@ -997,6 +1003,45 @@ We need to follow the following steps:
   ```
   
 <img width="1917" height="1050" alt="image" src="https://github.com/user-attachments/assets/ea21b49c-f13a-42fe-b74b-39a04a2c4547" />
+
+## Sequential Logic optimizations
+### Sky130RTL D3SK3 L1 Lab07 Sequential Logic Optimization part1
+Now we will start with Sequential circuit optimization. The files we will be dealing with are ```*dff_const*```.
+
+<img width="1918" height="1077" alt="image" src="https://github.com/user-attachments/assets/e11fc0f0-b988-4e44-9444-2e0ef6bb155a" />
+
+Let's look one by one inside the files.
+Open multiple files in gvim using ```gvim dff_const1.v -o dff_const2.v```
+
+<img width="1918" height="1053" alt="image" src="https://github.com/user-attachments/assets/7fc8ecc8-26a2-4902-9b2b-cbb73e727fd8" />
+
+If we see the code for ```dff_const1.v```; On applying `RESET` `Q` should become '0', and when `RESET` is '0' `Q` should become '1' only when next `posedge` of clock is applied. ALso we cannot say that `Q` is inverter output of `reset`, it only happens when positive edge of clock is applied.
+
+<img width="647" height="202" alt="image" src="https://github.com/user-attachments/assets/4e17041c-aa37-4b31-b3a5-a20674dd05f9" />
+
+Next ```dff_const2.v```, on applying `reset` it is becoming high, on removing `reset` it is high and on next clock edge also it is high. So it is constant throughout.
+
+<img width="607" height="122" alt="image" src="https://github.com/user-attachments/assets/ba4ab033-136f-4fd7-913b-84ed710c12c6" />
+
+Let's simulate this
+* ```tcl
+  # jump into the test bench
+  iverilog dff_const1.v tb_dff_const1.v
+  ```
+* ```tcl
+  # executable file is generated
+  ./a.out
+  ```
+* ```tcl
+  gtkwave tb_dff_const1.vcd
+  ```
+  <img width="1916" height="1032" alt="image" src="https://github.com/user-attachments/assets/074bd23b-afba-47e2-9c90-8fbaf36681e5" />
+  
+Now let's simulate ```dff_const2.v```.
+
+
+
+
 
 
 
