@@ -894,7 +894,89 @@ We will now study about other types of optimization techniques such as; **State 
 ## Combinational Logic Optimizations
 ### Sky130RTL D3SK2 L1 Lab06 Combinatioanl Logic Optimization part1
 
-Inside `/verilog_files/` folder, the files we are going to use are ```*opt*```
+Inside `/verilog_files/` folder, the files we are going to use are ```*opt*``` and ```*opt_check*```.
+
+<img width="1917" height="1025" alt="image" src="https://github.com/user-attachments/assets/4f20b07a-40e0-4dc4-a101-b805bf99cf18" />
+
+Let's check what is inside ```opt_check``` file.</br>
+
+<img width="1918" height="1047" alt="image" src="https://github.com/user-attachments/assets/eaec8c48-86a1-4e76-8661-9cc3e9707872" />
+
+`opt_check` is assigning value to y. When a=1, y=b; a=0,y=o. It is 2:1 Mux resulting in an AND gate.
+
+<img width="566" height="187" alt="image" src="https://github.com/user-attachments/assets/bb1b5c62-9dac-4ef2-a9fd-217e37e5b3c0" />
+
+Coming on to next ```opt_ckeck2``` file.
+
+<img width="1917" height="1031" alt="image" src="https://github.com/user-attachments/assets/061fffb3-b5d2-4337-8d1e-d57d9cd6f783" />
+
+Here when a=0, value is 'b'; a=1, value is '1'. So it is a 2:1 mux resulting in an OR gate.
+
+<img width="560" height="117" alt="image" src="https://github.com/user-attachments/assets/6f403362-84ca-416d-9a5d-8a94b4f2bd0c" />
+
+We will now load the libraries;
+* ```tcl
+  read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  read_verilog opt_check.v
+  ```
+* ```tcl
+  synth -top opt_check
+  ```
+* ```tcl
+  # command to do to contant propagation and optimization, cleans up leftover gates, nets, ports, or registers that no longer contribute to the final design after transformations like constant propagation, logic folding, or retiming.
+  opt_clean -purge
+  ```
+* ```tcl
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  show
+  ```
+  We are expecting an AND gate, and we got the same
+
+  <img width="1918" height="1020" alt="image" src="https://github.com/user-attachments/assets/c6283b87-fb2a-4f12-a255-91f7d2e53916" />
+
+  Now follow the same steps and read the other verilog file; ```opt_check2```.
+
+  We will get an OR gate here
+
+  <img width="1915" height="1051" alt="image" src="https://github.com/user-attachments/assets/95dc69af-7889-483d-b747-5b56e806b6e9" />
+
+### Sky130RTL D3SK2 L2 Lab07 Combinatioanl Logic Optimization part2
+Now we will see the file ```opt_check3.v```. 'a' has assigned mux (c?b:0) when it is '1', and '0' when a=0
+
+<img width="1918" height="1026" alt="image" src="https://github.com/user-attachments/assets/fb1c7dba-c127-4435-913b-5c0eca2ba7e7" />
+
+We are expecting a 3 input AND gate here.
+
+<img width="566" height="302" alt="image" src="https://github.com/user-attachments/assets/e1585bb8-24fa-4cc1-9b22-b39034f1b624" />
+
+<img width="1918" height="1053" alt="image" src="https://github.com/user-attachments/assets/3865afa2-06d5-46fe-9d24-8ec956273cd4" />
+
+Similarly we will check for ```opt_check4.v```
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+
+
+
 
 
 
