@@ -45,7 +45,15 @@
     - [Sky130RTL D3SK3 L1 Lab07 Sequential Logic Optimization part1](#Sky130RTL-D3SK3-L1-Lab07-Sequential-Logic-Optimization-part1)
     - [Sky130RTL D3SK3 L2 Lab07 Sequential Logic Optimization part2](#Sky130RTL-D3SK3-L2-Lab07-Sequential-Logic-Optimization-part2)
     - [Sky130RTL D3SK3 L3 Lab07 Sequential Logic Optimization part3](#Sky130RTL-D3SK3-L3-Lab07-Sequential-Logic-Optimization-part3)
+  - [Sequential Optimiazations for unused outputs](#Sequential-Optimiazations-for-unused-outputs)
+    - [Sky130RTL D3SK4 L1 Seq Optimization unused output part1](#Sky130RTL-D3SK4-L1-Seq-Optimization-unused-output-part1)
+    - [Sky130RTL D3SK4 L2 Seq Optimization unused output part2](#Sky130RTL-D3SK4-L2-Seq-Optimization-unused-output-part2)
 
+- [Day-5-Optimization in Synthesis](#Day-5-Optimization-in-Synthesis)
+  - [If Case constructs](#If-Case-constructs)
+    - [Sky130RTL D5SK1 L1 IF CASE Constructs part1](#Sky130RTL-D5SK1-L1-IF-CASE-Constructs-part1)
+    - [Sky130RTL D5SK1 L2 IF CASE Constructs part2](#Sky130RTL-D5SK1-L2-IF-CASE-Constructs-part2)
+    - [Sky130RTL D5SK1 L3 IF CASE Constructs part3](#Sky130RTL-D5SK1-L3-IF-CASE-Constructs-part3)
       
 
 # Day-1- Introduction to Verilog RTL design and Synthesis
@@ -1037,7 +1045,158 @@ Let's simulate this
   ```
   <img width="1916" height="1032" alt="image" src="https://github.com/user-attachments/assets/074bd23b-afba-47e2-9c90-8fbaf36681e5" />
   
-Now let's simulate ```dff_const2.v```.
+Now let's simulate ```dff_const2.v```.By following the same steps as shown earlier.
+
+<img width="1918" height="1060" alt="image" src="https://github.com/user-attachments/assets/8b7d0688-1b78-466a-a2f5-8e57e53e211f" />
+
+Now launch yosys and see the circuit;
+* ```tcl
+  read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  read_verilog dff_const1.v
+  ```
+* ```tcl
+  synth -top dff_const1
+  ```
+* ```tcl
+  dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+* ```tcl
+  show
+  ```
+
+  <img width="1918" height="1047" alt="image" src="https://github.com/user-attachments/assets/f6606253-6264-458f-8be9-39b424ab5e68" />
+
+  We can see a flop and it is coded as active low reset but our code show active high so we have inserted an inverter to reset pin.
+
+### Sky130RTL D3SK3 L2 Lab07 Sequential Logic Optimization part2
+
+Now do the same for ```dff_const2.v```. One thing to note that for executing ```dff_const1.v``` at the printing statistics there cells, and flops present whereas in ```dff_const2``` there are no flops and cells present.
+
+<img width="1918" height="1042" alt="image" src="https://github.com/user-attachments/assets/413e4695-0498-440a-9b62-e7f8d5df9b21" />
+
+<img width="1918" height="1031" alt="image" src="https://github.com/user-attachments/assets/0866f531-c24c-4221-ba4a-49821c661c43" />
+
+All the flops has been removed as the output was always '1' so no need for external connections. This is what is sequential optimizations.
+Let us see other sequential dff files, ```dff_const3.v```
+
+<img width="1918" height="1038" alt="image" src="https://github.com/user-attachments/assets/d73cdb5d-e36a-4401-9877-b6baa4e1e8fa" />
+
+Here there are 2 flops present and both getting `clk` and `reset`. `reset` of 1st is `set` of second. Upon `reset` Q1 is becoming 1'b0 and Q is becoming 1'b1; else Q1 is 1'b1 and Q is Q1.
+Now let us see if we apply clock and reset what happens to Q1 and Q, also can any flop be optimized.
+
+<img width="886" height="572" alt="image" src="https://github.com/user-attachments/assets/534308ea-02eb-4d3d-a091-212375e94204" />
+
+We can see above that Q is becoming 0 only for one clock cycle t=due to the flop delay, so we cannot remove the second flop.
+
+### Sky130RTL D3SK3 L3 Lab07 Sequential Logic Optimization part3
+Let's simulate ```dff_const3.v```
+
+<img width="1918" height="1021" alt="image" src="https://github.com/user-attachments/assets/1d83b137-67ed-46ad-a4e7-7d0854354bd5" />
+
+We can see Q going '1' after one clock edge.
+
+Let us also see our synthesis. We can see there are 2 flops present.
+
+<img width="1918" height="1017" alt="image" src="https://github.com/user-attachments/assets/c85406ef-df79-4f82-a411-8c235ac1b899" />
+
+<img width="1918" height="1022" alt="image" src="https://github.com/user-attachments/assets/f66efc17-bc68-4c3a-ac3d-f8d9382d5523" />
+
+Similarly, we can do ```dff_const4.v``` and ```dff_const5.v```.
+
+## Sequential Optimiazations for unused outputs
+### Sky130RTL D3SK4 L1 Seq Optimization unused output part1
+Besides Combinational logic optimization and Sequential logic optimization there one more kind of optimization which is called "Unused output Optimizations".
+
+Let us open a code ```counter_opt.v```. </br>
+We can see there is an input clk, input reset and output q. There isa signal internal to it which is a register 3 bit signal called `count`. We are writing `always` `posegde` clock. If there is a `reset`, the count is '000' else the count is incremental. So, if we look at the code, it is a 3 bit "Up-counter".
+
+<img width="1918" height="1017" alt="image" src="https://github.com/user-attachments/assets/680633bd-5dfd-4177-aa40-6a447bd45c50" />
+
+If we see the circuit, the counter has 3 bit input out of which output is assigned to count[0] bit only, rest all the bits are unused.
+
+<img width="837" height="250" alt="image" src="https://github.com/user-attachments/assets/04fc9a70-c548-476d-a56d-cfd995b539ac" />
+
+Let us two cases:</br>
+* Case1: assign q = count[0]
+* Case2: assign q = count[2:0] == 3'b100
+
+First we will discuss about case1 here.
+
+let see what happens after synthesis; Here we can see that it in inferring only 1 D-FF but it is a 3 bit counter.
+
+<img width="1918" height="988" alt="image" src="https://github.com/user-attachments/assets/d6cdd812-7ed1-405a-a400-368b9ea41b20" />
+
+<img width="1910" height="1020" alt="image" src="https://github.com/user-attachments/assets/dc9e2feb-df1f-4ca6-9032-07c80d87c998" />
+
+<img width="335" height="150" alt="image" src="https://github.com/user-attachments/assets/aaebdc08-1470-4d5a-84a3-f4b5f8aa7eb3" />
+
+### Sky130RTL D3SK4 L2 Seq Optimization unused output part2
+We will now modify the RTL.
+
+```tcl
+cp counter_opt.v counter_opt2.v
+```
+
+```tcl
+gvim counter_opt2.v
+```
+
+As we are now doing Case2, make the changes as follows.
+
+<img width="1918" height="1025" alt="image" src="https://github.com/user-attachments/assets/253dfe13-0e44-459d-ba4e-dd09aa7e4514" />
+
+Now we have assigned all the three bits to the counter, so we expect all the bits to interact with the counter.</br>
+If we do the synthesis, we will see 3 flops being present as all the bits are in use.</br>
+
+<img width="1918" height="995" alt="image" src="https://github.com/user-attachments/assets/2977e8f0-6bf0-4345-b020-f9ab241839ee" />
+
+<img width="1918" height="1026" alt="image" src="https://github.com/user-attachments/assets/af1fe244-48a8-4baa-b804-78b273ed8e42" />
+
+If we see the circuit, as q = C[2].C[1]'.C[0]', the circuit will look like;
+
+<img width="991" height="453" alt="image" src="https://github.com/user-attachments/assets/1d169182-70b5-4efd-a761-0e97a1ee11b6" />
+
+Therefore here all the bits are in use, whereas in previous case only one of the bits were used and rest were optimized. 
+
+# Day-5-Optimization in Synthesis
+## If Case constructs
+### Sky130RTL D5SK1 L1 IF CASE Constructs part1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
 
 
 
