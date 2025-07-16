@@ -35,9 +35,12 @@
 
 - [Day-3-Combinatinal and Sequential Optimizations](#Day-3-Combinatinal-and-Sequential-Optimizations)
   - [Introduction to Optimization](#Introduction-to-Optimization)
-    - [Sky130RTL D2SK1 L1 Introduction to Optimization part1](#Sky130RTL-D2SK1-L1-Introduction-to-Optimization-part1)
-    - [Sky130RTL D2SK1 L2 Introduction to Optimization part2](#Sky130RTL-D2SK1-L2-Introduction-to-Optimization-part2)
-    - [Sky130RTL D2SK1 L3 Introduction to Optimization part3](#Sky130RTL-D2SK1-L3-Introduction-to-Optimization-part3)
+    - [Sky130RTL D3SK1 L1 Introduction to Optimization part1](#Sky130RTL-D2SK1-L1-Introduction-to-Optimization-part1)
+    - [Sky130RTL D3SK1 L2 Introduction to Optimization part2](#Sky130RTL-D2SK1-L2-Introduction-to-Optimization-part2)
+    - [Sky130RTL D3SK1 L3 Introduction to Optimization part3](#Sky130RTL-D2SK1-L3-Introduction-to-Optimization-part3)
+  - [Combinational Logic Optimizations](#Combinational-Logic-Optimizations)
+    - [Sky130RTL D3SK2 L1 Lab06 Combinatioanl Logic Optimization part1](#Sky130RTL-D2SK2-L1-Lab06-Combinatioanl-Logic-Optimization-part1)
+    - [Sky130RTL D3SK2 L2 Lab07 Combinatioanl Logic Optimization part2](#Sky130RTL-D2SK2-L2-Lab07-Combinatioanl-Logic-Optimization-part2)
 
 # Day-1- Introduction to Verilog RTL design and Synthesis
 
@@ -822,7 +825,7 @@ Let us execute this optimization</br>
 
 # Day-3-Combinatinal and Sequential Optimizations
 ## Introduction to Optimization
-### Sky130RTL D2SK1 L1 Introduction to Optimization part1
+### Sky130RTL D3SK1 L1 Introduction to Optimization part1
 We know in Digital circuits, we have two types pf logic circuits namely 'Combinational' and 'Sequential' logical circuits.</br>
 Here we will first dicuss about  'Combinational logic Optimizations'.</br>
 
@@ -851,7 +854,7 @@ But this is not the optimized circuit, let's optimize it. We will solve the bool
 <img width="1147" height="540" alt="image" src="https://github.com/user-attachments/assets/aa454bbc-4dfa-4f5c-8ea0-7ec72d00bb37" />
 
 
-### Sky130RTL D2SK1 L2 Introduction to Optimization part2
+### Sky130RTL D3SK1 L2 Introduction to Optimization part2
 Now let us look at **Sequential Logic Optimization** Techniques; It is of two types: Basic and Advanced.
 
 <img width="1045" height="467" alt="image" src="https://github.com/user-attachments/assets/d7e34bca-8739-49b1-bfdb-378f8cb6b869" />
@@ -877,9 +880,23 @@ If RST = 0; Q = 0
  Q goes '1' asynchronously but Q goes '0' synchronous to the clock. So we cannot say Q = SET. Therefore, this logic cannot be optimized as the set has to be retained and for the FLop to be sequential constant 'Q' pin should always be a constant value.</br> 
 
  <img width="942" height="333" alt="image" src="https://github.com/user-attachments/assets/99476f9c-27e3-4e0c-b872-ac2163760bd0" />
+ 
+### Sky130RTL D3SK1 L3 Introduction to Optimization part3
+We will now study about other types of optimization techniques such as; **State optimization**, **Retiming** and **Sequential Logic Cloning**.</br>
+1) **State optimization**- Reducing the number of states. Re-encoding states to reduce complexity
 
-### Sky130RTL D2SK1 L3 Introduction to Optimization part3
-We will now study about other types of optimization techniques such as; **State optimization**
+2) **Retiming**-Retiming is the relocation of flip-flops across combinational logic blocks without changing the overall functionality. It improves clock speed by balancing delay across targets.
+
+3) **Sequential Logic Cloning**-Sequential logic cloning involves duplicating sequential elements (flip-flops/latches) to reduce fanout or optimize logic sharing. Reduces load on Flip-flop.
+
+<img width="1238" height="695" alt="image" src="https://github.com/user-attachments/assets/e656d38f-55ed-42be-8f3f-9a8843641f62" />
+
+## Combinational Logic Optimizations
+### Sky130RTL D3SK2 L1 Lab06 Combinatioanl Logic Optimization part1
+
+Inside `/verilog_files/` folder, the files we are going to use are ```*opt*```
+
+
 
  
 
