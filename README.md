@@ -1166,6 +1166,23 @@ Therefore here all the bits are in use, whereas in previous case only one of the
 # Day-5-Optimization in Synthesis
 ## If Case constructs
 ### Sky130RTL D5SK1 L1 IF CASE Constructs part1
+Here we will see about **'IF'** and **'CASE'** statements and danger with 'CASE' statements.</br>
+**if**: 
+* It gives the priority logic
+* Evaluates sequentially: top-to-bottom priority
+* Syntax:
+  ```tcl
+  if (condition)
+   begin
+       statement;
+   end
+  else (condition)
+   begin
+       statement;
+   end
+  ```
+  
+
 
 
 
