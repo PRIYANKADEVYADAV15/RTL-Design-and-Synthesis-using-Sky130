@@ -1260,21 +1260,20 @@ end
   **Caveats with case**:
     1) Incomplete case --> Lead to "Inferred Latches"
        e.g. 
-       
-       ```tcl
-       reg[1:0] sel
-       always @ (*)
-         begin
-            case (sel)
-              2'b00 : begin
-                  c1
-                     end
-              2'b01 : begin
-                  c2
-                      end
-            endcase
-         end
-  ```
+   ```tcl    
+  always @(*) 
+  begin
+    case (sel)
+        2'b00: begin
+            out = a;
+        end
+        2'b01: begin
+            out = b;
+        end
+    endcase
+   end
+```
+    
         
 
 
