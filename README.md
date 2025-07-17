@@ -54,6 +54,14 @@
     - [Sky130RTL D5SK1 L1 IF CASE Constructs part1](#Sky130RTL-D5SK1-L1-IF-CASE-Constructs-part1)
     - [Sky130RTL D5SK1 L2 IF CASE Constructs part2](#Sky130RTL-D5SK1-L2-IF-CASE-Constructs-part2)
     - [Sky130RTL D5SK1 L3 IF CASE Constructs part3](#Sky130RTL-D5SK1-L3-IF-CASE-Constructs-part3)
+  - [Labs on "Incomplete If Case"](#Labs-on-"Incomplete-If-Case")
+    - [Sky130RTL D5SK2 L1 Lab Incomplete IF part1](#Sky130RTL-D5SK2-L1-Lab-Incomplete-IF-part1)
+    - [Sky130RTL D5SK2 L2 Lab Incomplete IF part2](#Sky130RTL-D5SK2-L2-Lab-Incomplete-IF-part2)
+  - [Lab on "Incomplete overlapping case"](#Lab-on-"Incomplete-overlapping-case")
+    - [Sky130RTL D5SK3 L1 Lab Incomplete overlapping Case part1](#Sky130RTL-D5SK3-L1-Lab-Incomplete-overlapping-Case-part1)
+    - [Sky130RTL D5SK3 L2 Lab Incomplete overlapping Case part2](#Sky130RTL-D5SK3-L2-Lab-Incomplete-overlapping-Case-part2)
+    - [Sky130RTL D5SK3 L3 Lab Incomplete overlapping Case part3](#Sky130RTL-D5SK3-L3-Lab-Incomplete-overlapping-Case-part3)
+    - [Sky130RTL D5SK3 L4 Lab Incomplete overlapping Case part4](#Sky130RTL-D5SK3-L4-Lab-Incomplete-overlapping-Case-part4)
       
 
 # Day-1- Introduction to Verilog RTL design and Synthesis
@@ -1257,22 +1265,149 @@ end
 ```
 <img width="230" height="217" alt="image" src="https://github.com/user-attachments/assets/535b76ab-1606-455b-b4bd-dd2b88146a31" />
 
-  **Caveats with case**:
+  **Caveats with case**:</br>
     1) Incomplete case --> Lead to "Inferred Latches"
        e.g. 
-   ```tcl    
+   ```tcl
+reg [1:0] sel ; 
   always @(*) 
   begin
     case (sel)
         2'b00: begin
-            out = a;
+            out = c1;
         end
         2'b01: begin
-            out = b;
+            out = c2;
         end
     endcase
    end
+# rest of the pins will be latched to the output
 ```
+
+<img width="228" height="256" alt="image" src="https://github.com/user-attachments/assets/e7adb08f-93bd-4fac-ba38-e9b9638c541e" />
+
+To avoid this we write code case with `default`
+
+    e.g. 
+   ```tcl
+reg [1:0] sel ;
+  always @(*) 
+  begin
+    case (sel)
+        2'b00: begin
+            out = c1;
+        end
+        2'b01: begin
+            out = c2;
+        end
+        default: begin
+            out = 1'b0;
+        end
+    endcase
+   end
+# with deafult we avoid inferred latches
+```
+
+   2) Partial Assignment in "case": </br>
+      Suppose we are trying to control two outputs in "case".</br>
+      
+      e.g.
+      
+      ```tcl
+      reg [1:0] sel;
+      reg x, y;
+      always @ (*)
+       begin
+          case (sel)
+              2'b00: begin
+                 x = a;
+                 y = b;
+              end
+              2'b01: begin
+                 x = c;
+              end
+              default: begin
+                 x = d;
+                 y = b;
+              end
+          endcase
+       end
+      # We have assigned the value for select line '0', but when select line is '1' only value for x is assigned and not y.
+      ```
+
+      Partial assignment leads to inferred latches.
+
+<img width="295" height="315" alt="image" src="https://github.com/user-attachments/assets/8e5fba6c-4b74-41c7-9094-6bb51c14429d" />
+
+*Note: Assign all the outputs in all the segment of case.*
+
+   3) Comparison between 'if' and 'case' statements: </br>
+      **if**
+      
+      ```tcl
+      if    # highest priority
+      else if
+      else if
+      else  # lowest priority
+      ```
+
+      In case of 'if' only one segment executes at a time following the priority order.</br>
+
+      **case**
+
+      ```tcl
+      case (sel)
+         2'b00:
+         2'b01:
+         2'b10:
+         2'b1?: #one bit not specified
+      endcase
+      ```
+
+      In case of a bad code as given here both 2'b10 and 2'b11 can execute at the same time giving unpredictable outputs. Therefore we should not have overlapping        case.</br>
+
+## Labs on "Incomplete If Case"
+### Sky130RTL D5SK2 L1 Lab Incomplete IF part1
+We will see how the synthesis and simulator behaves when there is "incomplete if and case".
+
+Our files required here are  inside `*incomp*`.
+
+<img width="1657" height="816" alt="image" src="https://github.com/user-attachments/assets/16320ed2-c045-45f4-8a2f-405cc26fb209" />
+
+We will open all the files; `gvim *incomp* -o` and start with "incomplete if";
+
+<img width="1655" height="812" alt="image" src="https://github.com/user-attachments/assets/fbfc3ab1-3e5f-4c1f-ae4e-76b1bbfa62c2" />
+
+Let us look at the harware, here if always translates into a 'Mux'. So here select line is `i0`, if we `i0` is '1' output is 1 but else part is missing so `i0 = 0`, it will be latched.
+
+<img width="291" height="217" alt="image" src="https://github.com/user-attachments/assets/1886234f-119a-4482-88cd-1ec197659ab0" />
+
+The behaviour of this mux is similar to D-latch which latch enable as `i0`. It's a poselatch. Whenever `i0` is present `i1` is seen on y, whenever absent it latches on to it's value.
+
+<img width="216" height="177" alt="image" src="https://github.com/user-attachments/assets/455a0962-ffd2-40e8-88a0-d1b21963502a" />
+
+Let's see the simulation and synthesis;
+* **Simulation**
+  ```tcl
+  iverilog incomp_if.v tb_incomp_if.v
+  ```
+  ```tcl
+  ./a.out
+  ```
+  ```
+  gtkwave tb_incomp_if.vcd
+  ```
+
+
+
+
+
+
+
+      
+
+
+   
     
         
 
