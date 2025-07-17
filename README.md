@@ -1199,7 +1199,48 @@ Here we will see about **'IF'** and **'CASE'** statements and danger with 'CASE'
 
   <img width="348" height="287" alt="image" src="https://github.com/user-attachments/assets/ba75e54f-1208-4e9a-9bb3-ee1389186c9b" />
 
-  **Danger with 'if'**:
+  **Danger/Caution with 'if'**: Called as "Inferred latches"
+   We don't intend to put a latch, but this happens because of bad coding. Comes with incomplete "if" statement.
+
+   e.g.
+
+   ```tcl
+   if (condition1)
+       y=a;
+   else if (condition2)
+       y=b;
+   end
+   # There is no "else" condition specified
+   ```
+   
+   Now if condition1 not happens and condition2 also not happens then the hardware will remain incomplete. Therefore the tool will try to Latch.
+   It is very dangerous and should be avoided.
+
+  <img width="358" height="269" alt="image" src="https://github.com/user-attachments/assets/29531cb1-f687-4045-8d49-6eed24d49e1d" />
+
+### Sky130RTL D5SK1 L2 IF CASE Constructs part2
+Let us take an example of a Counter;</br>
+
+```tcl
+always @ (posedge clk, posedge reset)
+ begin
+   if (reset)
+          count <= 3'b00;
+   else if (en)
+          count <= count + 1;
+ end
+# although it is incomplete code but it is correct
+```
+
+Let' look at the hardware.
+
+
+
+
+
+
+
+
   
 
    
