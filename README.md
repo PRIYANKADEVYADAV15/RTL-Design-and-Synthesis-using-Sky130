@@ -1458,6 +1458,87 @@ We got the same what we expected.
 
 ## Lab on "Incomplete overlapping case"
 ### Sky130RTL D5SK3 L1 Lab Incomplete overlapping Case part1
+Here we will discuss about the "case" statements labs in detail.
+
+Let's open all the required files; ```gvim comp_case.v -o incomp_case.v -o partial_case_assign.v -o bad_case.v```.
+
+<img width="1665" height="811" alt="image" src="https://github.com/user-attachments/assets/05f10222-497d-40fb-a869-37c8923379c6" />
+
+First, we will look into ```incomp_case.v```
+
+<img width="1658" height="812" alt="image" src="https://github.com/user-attachments/assets/7247f189-9301-4187-a69a-640561a470c3" />
+
+According to the code it is clear that if 'select' is '00', `i0` will be selected and for select line '01' `i1` will be selected. But for '10' and '11' there is no input and also `default` statement is missing, so it will latch. Also the enabling condition for latch is sel[1]'.
+
+<img width="316" height="246" alt="image" src="https://github.com/user-attachments/assets/8a50815f-a0de-4ae4-b9e3-bdf36ea77d1a" />
+
+The logic we are expecting is a D-latch, when the select[1] is '0' the output is same as input, but when selct[1] is '1' the output is latched.
+
+<img width="585" height="282" alt="image" src="https://github.com/user-attachments/assets/5c7a1de8-1c54-4851-9104-2ce8075e34c8" />
+
+Let us do the functional simulation:
+```tcl
+iverilog incomp_case.v tb_incomp_case.v
+```
+```tcl
+./a.out
+```
+```tcl
+gtkwave incomp_case.vcd
+```
+
+<img width="1662" height="806" alt="image" src="https://github.com/user-attachments/assets/3dce5431-91f7-4400-885c-fec45dd306d4" />
+
+When select is '00' y is following `i0`</br>
+When select is '01' y is following `i1`</br>
+The moment select is becoming '11' or '10', y is latching to that value.</br>
+
+Let us now to the synthesis:
+```tcl
+  yosys
+  ```
+  ```tcl
+  read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+  ```tcl
+  read_verilog incomp_case.v
+  ```
+  ```tcl
+  synth -top incomp_case
+  ```
+  ```tcl
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+  ```tcl
+  show
+  ```
+
+<img width="1660" height="813" alt="image" src="https://github.com/user-attachments/assets/24c53605-bc94-49b2-8925-f1d48c4abdee" />
+
+<img width="1662" height="811" alt="image" src="https://github.com/user-attachments/assets/0626c360-0f32-43a7-bcbf-89f7a9f87173" />
+
+### Sky130RTL D5SK3 L2 Lab Incomplete overlapping Case part2
+Now we will look into the complete case; ```comp_case.v``` file. We can see here everything is same except that we added `default`.
+
+<img width="1652" height="808" alt="image" src="https://github.com/user-attachments/assets/99c92b12-6771-4dae-96bd-72021c4555f6" />
+
+The hardware looks something as shwon below.
+
+<img width="473" height="307" alt="image" src="https://github.com/user-attachments/assets/214033f9-0893-4038-86d6-5a9c11dcf55b" />
+
+Let's see the simulation and synthesis
+
+* **Simulation**
+  
+
+
+
+
+
+
+
+
+
 
 
 
