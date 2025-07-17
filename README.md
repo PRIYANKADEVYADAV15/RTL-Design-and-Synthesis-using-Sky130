@@ -1232,7 +1232,55 @@ always @ (posedge clk, posedge reset)
 # although it is incomplete code but it is correct
 ```
 
-Let' look at the hardware.
+Let' look at the hardware. (Always look for the harware).</br>
+When the 'enable' pin is ON, the counter is count+1 but when it is OFF, counter latches the value to previous value. So this is intended behaviour.
+
+Inferred Latches is fine for Sequential Circuits, but not fine for Combinational circuits.
+
+<img width="335" height="272" alt="image" src="https://github.com/user-attachments/assets/6d8a6172-2245-468e-98b2-6def19acafd5" />
+
+2) **Case** :
+   * 'if' and 'case' are assigned inside `always` block; they should be assigned under `reg` value.
+   * Used to implement multi-way branching, like a switch-case in C.
+   * Good for implementing multiplexers, state machines, and decoders.
+   * All case branches are evaluated simultaneously (unlike if).
+   * You should always include a `default` case to avoid unintended latch inference.
+  ```tcl
+   always @(sel or c1 or c2)
+begin
+    case (sel)
+        2'b00: out = c1;
+        2'b01: out = c2;
+        default: out = 1'b0;
+    endcase
+end
+```
+<img width="230" height="217" alt="image" src="https://github.com/user-attachments/assets/535b76ab-1606-455b-b4bd-dd2b88146a31" />
+
+  **Caveats with case**:
+    1) Incomplete case --> Lead to "Inferred Latches"
+       e.g. 
+       
+       ```tcl
+       reg[1:0] sel
+       always @ (*)
+         begin
+            case (sel)
+              2'b00 : begin
+                  c1
+                     end
+              2'b01 : begin
+                  c2
+                      end
+            endcase
+         end
+  ```
+        
+
+
+   
+   
+
 
 
 
