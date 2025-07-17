@@ -1397,6 +1397,77 @@ Let's see the simulation and synthesis;
   ```
   gtkwave tb_incomp_if.vcd
   ```
+Here we can see that when `i0` is high, output 'y' is following input, but when `i0` is low, y becomes a latch on`i1` and remains constant throughout.
+
+<img width="1657" height="806" alt="image" src="https://github.com/user-attachments/assets/a3e6ccb7-b629-41c0-8376-ffbdd5b1ac18" />
+
+* **Synthesis**
+  ```tcl
+  yosys
+  ```
+  ```tcl
+  read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+  ```tcl
+  read_verilog incomp_if.v
+  ```
+  ```tcl
+  synth -top incomp_if
+  ```
+  ```tcl
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+  ```tcl
+  show
+  ```
+
+  <img width="1656" height="802" alt="image" src="https://github.com/user-attachments/assets/cb87a6b6-b6d2-4bf6-8159-1339bfd5b1fb" />
+
+  <img width="1650" height="801" alt="image" src="https://github.com/user-attachments/assets/d5fa98ab-4ce5-4368-b9e3-cfb0cd8274f9" />
+
+  We can clearly see it's a D-latch and not a mux due to "incomplete if" statement.
+
+### Sky130RTL D5SK2 L2 Lab Incomplete IF part2
+Now let us see `incomp_if2.v`
+
+<img width="1657" height="807" alt="image" src="https://github.com/user-attachments/assets/689baa95-c2f6-4f05-8fe7-346fdf5951c9" />
+
+Considering the hardware, it has two mux where else past is missing, so it will latch as shown below.
+
+<img width="387" height="245" alt="image" src="https://github.com/user-attachments/assets/dd2e808c-78e4-46ec-ab5f-1c7b6d952426" />
+
+It will represent a D-latch where EN is when any of `i0` and `i2` can exist, so it will be ORed. At the input there will be a combined circuit of the multiplexer with values of `i0`, `i1`, `i2` and `i3`.
+
+<img width="578" height="316" alt="image" src="https://github.com/user-attachments/assets/0c73f25a-5e20-48b6-978e-491d25315e21" />
+
+Now we will Simulate and Synthesize and see if it shows similar behaviour or not.
+The steps followed are same as in previous case.
+
+<img width="1660" height="812" alt="image" src="https://github.com/user-attachments/assets/def9d297-4d12-4792-9f0f-ba78b3114fce" />
+
+* We can see whenever `i0 = 1`--> Output 'y' is following `i1`.
+* When `i0 = 0` --> it looks towards `i2`:
+    * When `i2` is low --> output is constant
+    * when `i2` is high --> output starts following `i3`
+
+Now let's synthesize:
+
+<img width="1656" height="803" alt="image" src="https://github.com/user-attachments/assets/794529ee-1edd-40b7-bfdc-c396e020cbc0" />
+
+We got the same what we expected.
+
+## Lab on "Incomplete overlapping case"
+### Sky130RTL D5SK3 L1 Lab Incomplete overlapping Case part1
+
+
+
+
+
+
+
+
+
+
 
 
 
