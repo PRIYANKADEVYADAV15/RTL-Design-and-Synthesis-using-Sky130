@@ -1630,10 +1630,16 @@ Now we can see that at select line '11' it is not constant and behaving as `i3`.
 ### Sky130RTL D5SK4 L1 For Loop and For Generate part1
 We will now use an important switch "for loop" and "for generate" constructs to generate any hardware.
 
-| Column 1 | Column 2 | Column 3 |
-|----------|----------|----------|
-| Value 1  | Value 2  | Value 3  |
-| A        | B        | C        |
+| Feature             | `for` Loop (Behavioral)                        | `generate for` Loop (Structural)                        |
+|---------------------|------------------------------------------------|---------------------------------------------------------|
+| Purpose             | For iterating inside `always` blocks           | For generating hardware blocks                          |
+| Used In             | Simulation (RTL/testbench)                     | Elaboration/Synthesis                                   |
+| Loop Variable       | `integer`                                      | `genvar`                                                |
+| Execution Time      | At simulation time                             | At compile/elaboration time                             |
+| Use Case            | Iterating logic or array manipulation          | Instantiating multiple module copies                    |
+| Syntax Scope        | Inside `always` block                          | Inside `generate` block                                 |
+| Common Application  | Data processing, testbench loops               | Bus logic, N-bit registers, scalable designs            |
+| Synthesis Friendly  | Only if correctly used (no infinite loops)     | Yes (specifically meant for synthesis)                  |
 
 
 
