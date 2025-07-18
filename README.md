@@ -12,7 +12,7 @@
     - [Sky130RTL D1SK3 L1 Introduction to Yosys](#Sky130RTL-D1SK3-L1-Introduction-to-Yosys)
     - [Sky130RTL D1SK3 L2 Introduction to Logic Synthesis part1](#Sky130RTL-D1SK3-L2-Introduction-to-Logic-Synthesis-part1)
     - [Sky130RTL D1SK3 L3 Introduction to Logic Synthesis part2](#Sky130RTL-D1SK3-L3-Introduction-to-Logic-Synthesis-part2)
-  - [Labs using Yosys and Sy130 PDKs](#Labs-using-Yosys-and-Sy130-PDKs)
+  - [Labs using Yosys and Sky130 PDKs](#Labs-using-Yosys-and-Sky130-PDKs)
     - [Sky130RTL D1SK4 L1 Lab3 Yosys 1 good mux Part1](#Sky130RTL-D1SK4-L1-Lab3-Yosys-1-good-mux-Part1)
     - [Sky130RTL D1SK4 L2 Lab3 Yosys 1 good mux Part2](#Sky130RTL-D1SK4-L2-Lab3-Yosys-1-good-mux-Part2)
     - [Sky130RTL D1SK4 L3 Lab3 Yosys 1 good mux Part3](#Sky130RTL-D1SK4-L3-Lab3-Yosys-1-good-mux-Part3)
@@ -62,6 +62,15 @@
     - [Sky130RTL D5SK3 L2 Lab Incomplete overlapping Case part2](#Sky130RTL-D5SK3-L2-Lab-Incomplete-overlapping-Case-part2)
     - [Sky130RTL D5SK3 L3 Lab Incomplete overlapping Case part3](#Sky130RTL-D5SK3-L3-Lab-Incomplete-overlapping-Case-part3)
     - [Sky130RTL D5SK3 L4 Lab Incomplete overlapping Case part4](#Sky130RTL-D5SK3-L4-Lab-Incomplete-overlapping-Case-part4)
+  - [for loop and for generate](#for-loop-and-for-generate)
+    - [Sky130RTL D5SK4 L1 For Loop and For Generate part1](#Sky130RTL-D5SK4-L1-For-Loop-and-For-Generate-part1)
+    - [Sky130RTL D5SK4 L2 For Loop and For Generate part2](#Sky130RTL-D5SK4-L2-For-Loop-and-For-Generate-part2)
+    - [Sky130RTL D5SK4 L3 For Loop and For Generate part3](#Sky130RTL-D5SK4-L3-For-Loop-and-For-Generate-part3)
+  - [Labs on "for loop" and "for generate"](#Labs-on-"for-loop"-and-"for-generate")
+    - [Sky130RTL D5SK5 L1 Lab For and For Generate part1](#Sky130RTL-D5SK5-L1-Lab-For-and-For-Generate-part1)
+    - [Sky130RTL D5SK5 L2 Lab For and For Generate part2](#Sky130RTL-D5SK5-L2-Lab-For-and-For-Generate-part2)
+    - [Sky130RTL D5SK5 L3 Lab For and For Generate part3](#Sky130RTL-D5SK5-L3-Lab-For-and-For-Generate-part3)
+    - [Sky130RTL D5SK5 L4 Lab For and For Generate part4](#Sky130RTL-D5SK5-L4-Lab-For-and-For-Generate-part4)
       
 
 # Day-1- Introduction to Verilog RTL design and Synthesis
@@ -362,7 +371,7 @@ This is the coversion of RTL into netlist using gates available in the `.lib`. <
 
 ![image](https://github.com/user-attachments/assets/7b4ce9ce-2872-47c6-9e60-a2f89624870a)
 
-## Labs using Yosys and Sy130 PDKs
+## Labs using Yosys and Sky130 PDKs
 ### Sky130RTL D1SK4 L1 Lab3 Yosys 1 good mux Part1
 Here we will see how to invoke Yosys and how to synthesize our designs.</br>
 We will be reading the verilog files and .lib files, then at the output we will write the verilog files.</br>
@@ -1573,7 +1582,68 @@ We can clearly see when the select is '11' the output is getitng latched, the si
 ### Sky130RTL D5SK3 L4 Lab Incomplete overlapping Case part4
 Since the code is code is complete, we will not ahve an inferred latch here but we are having problem with execution as it is a bad case.
 
-Let us Synthesize the code:
+Let us Synthesize the code:</br>
+```tcl
+  yosys
+  ```
+  ```tcl
+  read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+  ```tcl
+  read_verilog bad_case.v
+  ```
+  ```tcl
+  synth -top bad_case
+  ```
+  ```tcl
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+  ```tcl
+  write_verilog -noattr bad_case_net.v
+  ```
+  ```tcl
+  show
+  ```
+After synthesis we can observe that there are no latches as we expected.</br>
+
+<img width="1657" height="807" alt="image" src="https://github.com/user-attachments/assets/080002e4-3ced-4951-9067-825d630683b8" />
+
+after the synthesis, do simulations;
+```tcl
+# read the standard cell models, netlist and the test bench
+iverilog ../my_lib/verilog_model_primitives.v ../my_lib/verilog_model/sky130_fd_sc_hd.v bad_case_net.v tb_bad_case.v
+```
+```tcl
+./a.out
+```
+```tcl
+gtkwave tb_bad_case.vcd
+```
+
+<img width="1662" height="808" alt="image" src="https://github.com/user-attachments/assets/91c9fcdf-a6bf-4e26-bb01-766fd35213e7" />
+
+Now we can see that at select line '11' it is not constant and behaving as `i3`. Hence there is no latching action here.
+
+<img width="1658" height="805" alt="image" src="https://github.com/user-attachments/assets/cb309cd3-7c9b-42a9-9395-eee555e5f31f" />
+
+## for loop and for generate
+### Sky130RTL D5SK4 L1 For Loop and For Generate part1
+We will now use an important switch "for loop" and "for generate" constructs to generate any hardware.
+
+| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| Value 1  | Value 2  | Value 3  |
+| A        | B        | C        |
+
+
+
+
+
+
+
+
+
+
 
 
 
