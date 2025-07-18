@@ -1727,6 +1727,86 @@ endgenerate
 
 ### Sky130RTL D5SK4 L3 For Loop and For Generate part3
 Why do we need to replicate any hardware?
+Let us take the example of Ripple Carry Adder (RCA)</br>
+A Ripple Carry Adder is a digital circuit used to add two binary numbers. It is made by cascading multiple full adders — each full adder handles one bit of the operands.
+
+* Each full adder adds two bits and a carry-in, producing a sum and a carry-out.
+* The carry-out from one stage is connected to the carry-in of the next stage.
+* Carry “ripples” through the full adders from the least significant bit (LSB) to the most significant bit (MSB).
+
+<img width="1027" height="392" alt="image" src="https://github.com/user-attachments/assets/335ab8a9-b2fe-4025-9af5-ff299ce67917" />
+
+In Verilog, instead of manually instantiating 32 full adders for a 32-bit RCA, we use `generate for` to automate and scale the design.
+
+## Labs on "for loop" and "for generate"
+### Sky130RTL D5SK5 L1 Lab For and For Generate part1
+We will be looking at the files `mux_generate.v`.
+
+<img width="1655" height="800" alt="image" src="https://github.com/user-attachments/assets/851132de-e7d2-4fd6-93be-a4bf596a3f9a" />
+
+It is 4:1 multiplexer with 4 inputs, 2 bit select line and an output. We are making a bus i_int().
+
+| Line                               | Description                                                                                                      |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `module mux_generate ...`          | Declares the module `mux_generate` with 4 input lines `i0` to `i3`, 2-bit select line `sel`, and one output `y`. |
+| `wire [3:0] i_int;`                | Declares a 4-bit wire to group all 4 inputs together.                                                            |
+| `assign i_int = {i3, i2, i1, i0};` | Concatenates the inputs into a single bus: MSB = i3, LSB = i0. This makes indexing easier.                       |
+| `integer k;`                       | Loop iterator used in the `for` loop.                                                                            |
+| `always @(*)`                      | Combinational logic block. It gets triggered whenever any input changes.                                         |
+| `for (k = 0; k < 4; k = k + 1)`    | Loops over all 4 bits of the input.                                                                              |
+| `if (k == sel)`                    | Compares loop index with `sel`. When matched, assigns the corresponding input to output.                         |
+| `y = i_int[k];`                    | The selected input is assigned to output `y`.                                                                    |
+
+
+<img width="607" height="286" alt="image" src="https://github.com/user-attachments/assets/b6a2a876-01be-452c-a7a7-be141c009b90" />
+
+Let us Simulate the code:
+```tcl
+iverilog mux_generate.v tb_mux_generate.v
+```
+```tcl
+./a.out
+```
+```tcl
+gtkwave mux_generate.vcd
+```
+
+<img width="1652" height="808" alt="image" src="https://github.com/user-attachments/assets/dde83e4b-e2b2-44d7-88ca-a6c822358ed2" />
+
+We can see that for select line '00' output follows input `i0`, for select line '01' y == `i1`, for select line '10' y == `i2` and for select line '11' y == `i3`.
+This is necessary to implement large bit multiplexers.</br>
+
+For synthesis:
+```tcl
+  yosys
+  ```
+  ```tcl
+  read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+  ```tcl
+  read_verilog mux_generate.v
+  ```
+  ```tcl
+  synth -top mux_generate
+  ```
+  ```tcl
+  abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+  ```
+  ```tcl
+  show
+  ```
+
+ <img width="1657" height="805" alt="image" src="https://github.com/user-attachments/assets/23b40f54-5dfa-420b-b548-9618e0b12b23" />
+
+
+
+
+
+
+
+
+
+
 
 
 
