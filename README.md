@@ -1641,7 +1641,33 @@ We will now use an important switch "for loop" and "for generate" constructs to 
 | Common Application  | Data processing, testbench loops               | Bus logic, N-bit registers, scalable designs            |
 | Synthesis Friendly  | Only if correctly used (no infinite loops)     | Yes (specifically meant for synthesis)                  |
 
-
+Example:
+**For Loop**
+| Mux Type | `for` Loop Syntax Example |
+|----------|----------------------------|
+| 2:1 Mux  | ```verilog
+always @(*) begin
+   case (sel)
+      1'b0 : y = i0;
+      1'b1 : y = i1;
+   endcase
+end
+``` |
+| 4:1 Mux  | ```verilog
+always @(*) begin
+   case (sel
+      1'b0 : y = i0;
+      1'b1 : y = i1;
+   endcase
+end
+``` |
+| 32:1 Mux | ```verilog
+always @(*) begin
+    for (i = 0; i < 32; i = i + 1)
+        out = (sel == i) ? in[i] : out;
+end
+``` |
+ 
 
 
 
