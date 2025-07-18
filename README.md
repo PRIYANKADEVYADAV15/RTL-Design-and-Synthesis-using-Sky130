@@ -1798,6 +1798,18 @@ For synthesis:
 
  <img width="1657" height="805" alt="image" src="https://github.com/user-attachments/assets/23b40f54-5dfa-420b-b548-9618e0b12b23" />
 
+ ### Sky130RTL D5SK5 L2 Lab For and For Generate part2
+ Next example we are going to see is of Demultiplexers.
+ 
+ Type the command: ```gvim demux_case.v -o demux_generate.v```
+
+ These two files give the comparison of writing a code in "case" statement and "for loop".
+
+ <img width="1662" height="811" alt="image" src="https://github.com/user-attachments/assets/73606c5b-dac7-4782-8d02-06f0d2a39bbf" />
+
+ 
+
+
 
 
 
