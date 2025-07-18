@@ -1662,7 +1662,7 @@ Example:
       3'b11 : y = i3;
    endcase
   end
-```
+  ```
 * 32:1 mux
   ```verilog
   always @(*) begin
@@ -1678,7 +1678,64 @@ Example:
    endcase
   end
   ```
-But we can't write big codes like this, this is where the power of "Blocking statements" comes into picture.
+But we can't write big codes like this, this is where the power of "Blocking statements" comes into picture. A blocking statement in Verilog is a type of procedural assignment that executes sequentially, just like C-style code. It uses the = assignment operator.</br>
+
+Let us take the example of 32:1 mux;
+```verilog
+# assumption: input 32:1 bus
+integer i
+always @ (*)
+ begin
+   for(i = 0; i < 32; i = i+1) begin
+     if(i==sel)
+     y = inp[i];
+  end
+end
+```
+Therefore it is easy and short to implement 32:1 mux or even bigger muxes using for loop.
+
+### Sky130RTL D5SK4 L2 For Loop and For Generate part2
+Let us take an example of 1:8 DEMUX
+```verilog
+# assume op-bus[7:0] = output
+         input = ip
+         sel = [2:0]
+integer i;
+always @ (*)
+  begin
+     op-bus[7:0] = 8'b0;
+     for(i = 0; i < 8; i = i+1) begin
+        if (i==sel)
+            op-bus[i] = input;
+     end
+ end
+```
+**For Generate**
+Let's say I want to instantiate a hardware 500 times, so this is not possible to write this manually. For this purpose we use "For Generate", it is used to replicate the hardware multiple times. We use `genvar` to generate a variable and it is always outside the `always` block.
+
+Example:</br>
+```verilog
+genvar i;
+generate
+  for(i = 0; i < 8; i = i+1) begin
+   and u_and(.a(in1[i]); .b(in2[i]); .y(y[i]));
+end
+endgenerate
+```
+
+<img width="283" height="241" alt="image" src="https://github.com/user-attachments/assets/5dc4aef7-9965-42ce-aa6f-64991966b139" />
+
+### Sky130RTL D5SK4 L3 For Loop and For Generate part3
+Why do we need to replicate any hardware?
+
+
+
+
+
+
+
+
+
 
 
 
