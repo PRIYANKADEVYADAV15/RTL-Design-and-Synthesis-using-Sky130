@@ -49,6 +49,19 @@
     - [Sky130RTL D3SK4 L1 Seq Optimization unused output part1](#Sky130RTL-D3SK4-L1-Seq-Optimization-unused-output-part1)
     - [Sky130RTL D3SK4 L2 Seq Optimization unused output part2](#Sky130RTL-D3SK4-L2-Seq-Optimization-unused-output-part2)
 
+- [Day-4-GLS, blocking vs non-blocking and Synthesis-Simulation mismatch](#Day-4-GLS,-blocking-vs-non-blocking-and-Synthesis-Simulation-mismatch)
+  - [GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements](#GLS,-Synthesis-Simulation-mismatch-and-Blocking/Non-blocking-statements)
+    - [SKY130RTL D4SK1 L1 GLS Concepts And Flow Using Iverilog](#SKY130RTL-D4SK1-L1-GLS-Concepts-And-Flow-Using-Iverilog)
+    - [SKY130RTL D4SK1 L2 Synthesis Simulation Mismatch](#SKY130RTL-D4SK1-L2-Synthesis-Simulation-Mismatch)
+    - [SKY130RTL D4SK1 L3 Blocking And NonBlocking Statements In Verilog](#SKY130RTL-D4SK1-L3-Blocking-And-NonBlocking-Statements-In-Verilog)
+    - [SKY130RTL D4SK1 L4 Caveats With Blocking Statements](#SKY130RTL-D4SK1-L4-Caveats-With-Blocking-Statements)
+  - [Labs on GLS and Synthesis-Simulation Mismatch](#Labs-on-GLS-and-Synthesis-Simulation-Mismatch)
+    - [SKY130RTL D4SK2 L1 Lab GLS Synth Sim Mismatch part1](#SKY130RTL-D4SK2-L1-Lab-GLS-Synth-Sim-Mismatch-part1)
+    - [SKY130RTL D4SK2 L2 Lab GLS Synth Sim Mismatch part2](#SKY130RTL-D4SK2-L2-Lab-GLS-Synth-Sim-Mismatch-part2)
+  - [Labs on synth-sim mismatch for blocking statement](#Labs-on-synth-sim-mismatch-for-blocking-statement)
+    - [SKY130RTL D4SK3 L1 Lab Synth sim mismatch blocking statement part1](#SKY130RTL-D4SK3-L1-Lab-Synth-sim-mismatch-blocking-statement-part1)
+    - [SKY130RTL D4SK3 L2 Lab Synth sim mismatch blocking statement part2](#SKY130RTL-D4SK3-L2-Lab-Synth-sim-mismatch-blocking-statement-part2)
+
 - [Day-5-Optimization in Synthesis](#Day-5-Optimization-in-Synthesis)
   - [If Case constructs](#If-Case-constructs)
     - [Sky130RTL D5SK1 L1 IF CASE Constructs part1](#Sky130RTL-D5SK1-L1-IF-CASE-Constructs-part1)
@@ -1832,7 +1845,35 @@ There are two ways of executing this:
 1) Instantiating FA 4 times
 2) For generate
 
-The 
+The best option is "For generate" as it replicates the hardware and we don't have to instantiate every time.</br>
+The files we are going to use are: ```gvim rca.v fa.v -o```.
+
+<img width="1648" height="802" alt="image" src="https://github.com/user-attachments/assets/587eb226-c219-43ae-a466-43e9e5e1a418" />
+
+We should know the "Rule for Addition":
+* If we add 2 'N' bit numbers, the resultant is (N + 1) number.
+* If we add an 'N' bit and 'M' bit number, the resultant is [max(N,M) + 1] bit number .
+
+So here we are adding two 8 bits numbers, the output we will get is a 9 bit number.
+
+### Sky130RTL D5SK5 L4 Lab For and For Generate part4
+Let us simulate the verilog code.</br.
+
+```tcl
+iverilog fa.v rca.v tb_rca.v
+# we mentioned fa.v because the instantiation of FA is present in fa.v file, so we need to call that as well.
+```
+```tcl
+./a.out
+```
+```tcl
+gtkwave tb_rca.vcd
+```
+
+We will make the numbers in decimal format, by right clicking and changing the 'data format' to 'decimal'.
+
+<img width="1650" height="808" alt="image" src="https://github.com/user-attachments/assets/e9bc1193-fad9-480e-b275-8f96bc8ae5b2" />
+
 
 
 
