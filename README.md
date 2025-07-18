@@ -1807,6 +1807,8 @@ For synthesis:
 
  <img width="1662" height="811" alt="image" src="https://github.com/user-attachments/assets/73606c5b-dac7-4782-8d02-06f0d2a39bbf" />
 
+ We will use the power of "Blocking statements". we have assigned all the outputs to '00' as `y_int = 8'b0` and when any 
+
  
 
 
