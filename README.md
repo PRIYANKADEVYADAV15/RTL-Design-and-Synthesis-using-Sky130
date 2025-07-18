@@ -1529,7 +1529,70 @@ The hardware looks something as shwon below.
 Let's see the simulation and synthesis
 
 * **Simulation**
-  
+  We can see when select is '10' or '11' it is exactly following `i2`. There is no latching action.
+
+  <img width="1655" height="811" alt="image" src="https://github.com/user-attachments/assets/dcd159bb-86b1-4e37-8180-46c4a6b34318" />
+
+* **Synthesis**
+  Upon synthesis we can see that there is no latch present.
+
+  <img width="1656" height="812" alt="image" src="https://github.com/user-attachments/assets/1acbd8f9-a3f6-4801-9916-ba7298c9b7d5" />
+
+  <img width="1660" height="817" alt="image" src="https://github.com/user-attachments/assets/b35ae00e-19c8-4760-a07f-85e0b6e650f4" />
+
+Let us look at the `partial_case_assign.v` file as well.
+
+<img width="1657" height="800" alt="image" src="https://github.com/user-attachments/assets/24b98256-c140-4098-8472-81aa3cce3371" />
+
+Here there are two outputs, x and y. Even though `default` is mentioned in the code, it is not complete.
+
+<img width="548" height="241" alt="image" src="https://github.com/user-attachments/assets/70a1258e-34fd-4c64-bdfb-2301a291cf6f" />
+
+WHat is the condition for latching. Latch enable condition is sel[1] + sel[0]'.
+
+### Sky130RTL D5SK3 L3 Lab Incomplete overlapping Case part3
+let us synthesis ```partial_case_assign.v```
+
+<img width="1661" height="811" alt="image" src="https://github.com/user-attachments/assets/32e8a56f-f871-4cbf-b8d6-33b02b371a3b" />
+
+We can see here in the path of 'y' there is no latch but in the path of 'x' there is a latch.
+
+<img width="1658" height="808" alt="image" src="https://github.com/user-attachments/assets/d0099e7a-da1a-4498-b28b-2a5c01c52803" />
+
+Let us see ```bad_case.v``` file.</br>
+In 'case' statements there can be execution of two logics at the same time which casues mismatch if there is a bad case.
+
+<img width="1652" height="808" alt="image" src="https://github.com/user-attachments/assets/69886f70-ac29-4e74-b0dc-6148c97b4731" />
+
+Here, for 2'b10 `i2` is assigned and for input 2'b1? `i3` is assigned. So simulator will try to execute both at the same time. Simulations will be getting confused with each other.
+
+<img width="1657" height="810" alt="image" src="https://github.com/user-attachments/assets/a7be833a-0997-4c1f-9461-9cb61a12f9c0" />
+
+We can clearly see when the select is '11' the output is getitng latched, the simulator is not able to decide the output, it is getting confused whar to execute.
+
+### Sky130RTL D5SK3 L4 Lab Incomplete overlapping Case part4
+Since the code is code is complete, we will not ahve an inferred latch here but we are having problem with execution as it is a bad case.
+
+Let us Synthesize the code:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
