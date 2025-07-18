@@ -1807,9 +1807,38 @@ For synthesis:
 
  <img width="1662" height="811" alt="image" src="https://github.com/user-attachments/assets/73606c5b-dac7-4782-8d02-06f0d2a39bbf" />
 
- We will use the power of "Blocking statements". we have assigned all the outputs to '00' as `y_int = 8'b0` and when any 
+ We will use the power of "Blocking statements". we have assigned all the outputs to '00' as `y_int = 8'b0` and the input line is routed to output depending upon the select line.
 
- 
+The initialization step  `y_int = 8'b0` is very important as it will also avoid "Inferred latches".</br>
+The "case" statement code is bulky and may increase if the required mux or demux is of higher bits.</br>
+Whereas in case of "For Loop", the code is small comparatively.</br>
+
+Now let us try out the simulation and synthesis for both "case" and "for loop":
+
+<img width="1655" height="812" alt="image" src="https://github.com/user-attachments/assets/c6620097-087e-4dcd-96ff-3678117515af" />
+
+We can see here, for the select line to be selected the output follows input `i` rest it is zero.</br>
+Similarly, we will get for "for loop" simulation.
+
+<img width="1652" height="808" alt="image" src="https://github.com/user-attachments/assets/95b940b6-028c-4f53-8207-8102da01fdc8" />
+
+### Sky130RTL D5SK5 L3 Lab For and For Generate part3
+Now we will understand about the "For generate".</br>
+If we consider the example of Ripple carry adder adding two numbers 'a' and 'b' of 4 bits each, then it required 4 Full Adder (FA) to execute it. A FA requires 3 inputs and gives two output "Sum" and"carry".</br>
+
+<img width="622" height="310" alt="image" src="https://github.com/user-attachments/assets/abcec79e-abb9-411d-83a7-b415f2c70868" />
+
+There are two ways of executing this:
+1) Instantiating FA 4 times
+2) For generate
+
+
+
+
+
+
+
+
 
 
 
