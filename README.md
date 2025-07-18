@@ -1643,31 +1643,42 @@ We will now use an important switch "for loop" and "for generate" constructs to 
 
 Example:
 **For Loop**
-| Mux Type | `for` Loop Syntax Example |
-|----------|----------------------------|
-| 2:1 Mux  | ```verilog
-always @(*) begin
+* 2:1 mux
+  ```verilog
+  always @(*) begin
    case (sel)
       1'b0 : y = i0;
       1'b1 : y = i1;
    endcase
-end
-``` |
-| 4:1 Mux  | ```verilog
-always @(*) begin
-   case (sel
-      1'b0 : y = i0;
-      1'b1 : y = i1;
+  end
+  ```
+* 4:1 mux
+ ```verilog
+  always @(*) begin
+   case (sel)
+      3'b00 : y = i0;
+      3'b01 : y = i1;
+      3'b10 : y = i2;
+      3'b11 : y = i3;
    endcase
-end
-``` |
-| 32:1 Mux | ```verilog
-always @(*) begin
-    for (i = 0; i < 32; i = i + 1)
-        out = (sel == i) ? in[i] : out;
-end
-``` |
- 
+  end
+```
+* 32:1 mux
+  ```verilog
+  always @(*) begin
+   case (sel)
+      5'b00000 : y = i0;
+      5'b00001 : y = i1;
+      5'b00010 : y = i2;
+      5'b00011 : y = i3;
+      .
+      .
+      .
+      5'b1111 : y = i31;
+   endcase
+  end
+  ```
+But we can't write big codes like this, this is where the power of "Blocking statements" comes into picture.
 
 
 
