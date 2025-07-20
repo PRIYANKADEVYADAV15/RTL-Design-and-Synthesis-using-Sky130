@@ -1236,6 +1236,134 @@ A synthesis-simulation mismatch occurs when the behavior of our RTL simulation d
 * Blocking vs non blocking assignments
 * Non standard verilog coding
 
+**1) Missing Sensitivity List**
+This is a common reason for mismatches between simulation and synthesized results in Verilog. In simulation, an `always` block only runs when a signal in its sensitivity list changes. If a needed signal is left out, the block won’t respond to changes in that signal, which can lead to incorrect simulation results.
+
+<img width="777" height="791" alt="image" src="https://github.com/user-attachments/assets/abec4e58-72b5-47b9-86a9-5490b1cf099c" />
+
+**Issue in the Code:**
+* The `always` block is sensitive only to `sel`.
+* If `i0` or `i1` changes while `sel` stays the same, the block won’t run again.
+* This means the output `y` won’t update, even though the inputs have changed.
+* As a result, `y` may hold an old value, which makes it behave like a latch instead of a proper MUX.
+
+**Simulator vs Synthesis Behavior:**
+In Verilog, simulators and synthesis tools can behave differently if the sensitivity list is incomplete. During simulation, the behavior depends only on the signals included in the sensitivity list. So, if inputs like `i0` or `i1` change but are not listed, the simulator does not re-evaluate the logic, and those changes are ignored. However, synthesis tools do not rely on the sensitivity list. Instead, they analyze the full logic structure and correctly infer the intended functionality, such as a multiplexer. This difference can lead to a 'mismatch' where the synthesized hardware functions correctly, but the simulation shows incorrect or outdated results due to the missing signals in the sensitivity list.
+
+**Below is the corrected code:**
+```verilog
+always @(*)  // Correct sensitivity list
+begin
+    if (sel)
+        y = i1;
+    else
+        y = i0;
+end
+```
+
+Using `always @(*)` ensures the sensitivity list includes all signals used on the right-hand side (`sel`, `i0`, and `i1`) automatically. This means the `always` block will run whenever any of these signals change. As a result, the simulation behaves correctly and updates the output `y` as expected.
+
+### SKY130RTL D4SK1 L3 Blocking And NonBlocking Statements In Verilog
+#### 2) Blocking vs non blocking assignments
+
+**Blocking (`=`) vs Non-blocking (`<=`) Assignments in Verilog:**
+* Inside an `always` block
+  1) Blocking (`=`): Statements run one after another in the order they are written. Each line must finish before the next starts. This is often used to describe    combinational logic or step-by-step code behavior.
+
+  2) Non-blocking (`<=`): All right-hand side (RHS) values are calculated at the beginning of the time step, but the assignments to the left-hand side (LHS) happen at the end of the time step. This is used to model sequential logic, like flip-flops.
+
+* Caveats with Blocking Assignments in Sequential Logic
+  Caveats are the warnings or limitation we should be careful about.</br>
+
+  Let us consider two cases:
+
+  * Correct use of blocking (Modelling two D-FFs)
+ ```verilog
+    module code (
+    input clk,
+    input reset,
+    input d,
+    output reg q
+);
+
+reg q0;
+
+always @(posedge clk, posedge reset)
+begin
+    if (reset)
+    begin
+        q0 = 1'b0;
+        q = 1'b0;
+    end
+    else
+    begin
+        q = q0;
+        q0 = d;
+    end
+end
+
+endmodule
+```
+Below is the explanation of above code:
+* In the `else` block:
+   * `q = q0`; is executed first
+   * Then `q0 = d`; is executed
+* Since `q` gets the previous value of `q0`, this mimics two separate flip-flops:
+   * `q0` stores `d`
+   * `q` stores the previous `q0`.
+This correctly models two D flip-flops.
+
+* Incorrect ordering (Leads to Single Flip Flop)
+ ```verilog
+  module code (
+    input clk,
+    input reset,
+    input d,
+    output reg q
+);
+
+reg q0;
+
+always @(posedge clk, posedge reset)
+begin
+    if (reset)
+    begin
+        q0 = 1'b0;
+        q = 1'b0;
+    end
+    else
+    begin
+        q0 = d;
+        q = q0;
+    end
+end
+
+endmodule
+```
+In this code:
+
+* `q0 = d`; is executed before
+* `q = q0`; — now `q` just copies `d` because `q0` was already updated.
+* So both `q` and `q0` carry the same value → only one flip-flop inferred.
+
+This leads to incorrect synthesis where only one DFF is inferred, whereas required FFs are two.
+
+* Use non-blocking (`<=`) for sequential logic (in `always @(posedge clk)` blocks).
+* Use blocking (`=`) only for combinational logic (in `always @(*)` blocks).
+This ensures clarity in simulation and synthesizes accurate and intended hardware.
+
+### SKY130RTL D4SK1 L4 Caveats With Blocking Statements
+
+
+
+
+
+
+
+
+
+
+
 
 
 
