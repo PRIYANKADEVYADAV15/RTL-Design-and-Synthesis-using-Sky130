@@ -1193,6 +1193,56 @@ If we see the circuit, as q = C[2].C[1]'.C[0]', the circuit will look like;
 
 Therefore here all the bits are in use, whereas in previous case only one of the bits were used and rest were optimized. 
 
+# Day-4-GLS, blocking vs non-blocking and Synthesis-Simulation mismatch
+## GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements
+### SKY130RTL D4SK1 L1 GLS Concepts And Flow Using Iverilog
+**Introduction to Gate Level Simulation (GLS)**
+RTL simulation is the process of checking the functional correctness of RTL code using a testbench.
+
+Gate Level Simulation, on the other hand, uses the same testbench to verify the synthesized netlist — the gate-level representation of the design — instead of the original RTL code.
+
+**Why Gate Level Simulation (GLS) is Important**
+* <u>Logical Verification After Synthesis:</u>
+Even though the synthesized netlist is logically equivalent to the RTL, synthesis tools apply various optimizations that could unintentionally introduce logical issues. GLS helps confirm that no such errors have been introduced during synthesis.
+
+* <u>Timing Verification:</u>
+While RTL simulation checks functionality, it doesn't account for actual gate-level delays. GLS, especially when used with delay annotation (like SDF files), helps ensure that the design meets timing requirements and operates correctly at the desired clock frequency.
+
+**Gate Level Simulation (GLS) using Icarus Verilog (iverilog)**
+
+<img width="1200" height="673" alt="Screenshot 2025-07-20 154707" src="https://github.com/user-attachments/assets/db29d930-8568-4c2e-b6a7-cae4a9127717" />
+
+**Components in the GLS Setup**
+* <u>Design (Synthesized Netlist)</u>:
+This is the output of synthesis and consists of interconnected logic gates representing the original RTL design.
+
+* <u>Gate-Level Verilog Models</u>:
+These files define the behavior of standard cells like AND, OR, and D flip-flops. They are required because the netlist uses these primitive gates, and iverilog must understand how they function for accurate simulation.
+
+* <u>Testbench</u>:
+Supplies input stimulus and verifies output. The same testbench used for RTL simulation can typically be reused since the netlist retains the same interface (ports) as the RTL design.
+
+* <u>iverilog</u>:
+A Verilog compiler that compiles the testbench, netlist, and standard cell models. It produces a VCD (Value Change Dump) file to log signal transitions during simulation.
+
+* <u>GTKWave</u>:
+A waveform viewer used to analyze signal behavior over time by displaying the data captured in the VCD file.
+
+### SKY130RTL D4SK1 L2 Synthesis Simulation Mismatch
+A synthesis-simulation mismatch occurs when the behavior of our RTL simulation does not match the behavior of our synthesized netlist during Gate Level Simulation (GLS).
+
+<u>Types of Synthesis Simulation Mismatch</u>:</br>
+* Missing Sensitivity List
+* Blocking vs non blocking assignments
+* Non standard verilog coding
+
+
+
+
+
+
+
+
 # Day-5-Optimization in Synthesis
 ## If Case constructs
 ### Sky130RTL D5SK1 L1 IF CASE Constructs part1
