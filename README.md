@@ -1353,6 +1353,78 @@ This leads to incorrect synthesis where only one DFF is inferred, whereas requir
 This ensures clarity in simulation and synthesizes accurate and intended hardware.
 
 ### SKY130RTL D4SK1 L4 Caveats With Blocking Statements
+**We will see the version with Non blocking Assignments**
+
+```verilog
+module code (
+    input clk,
+    input reset,
+    input d,
+    output reg q
+);
+
+reg q0;
+
+always @(posedge clk or posedge reset)
+begin
+    if (reset)
+    begin
+        q0 <= 1'b0;
+        q <= 1'b0;
+    end
+    else
+    begin
+        q <= q0;
+        q0 <= d;
+    end
+end
+
+endmodule
+```
+
+* Using non-blocking assignments (`<=`), both statements `q <= q0`; and `q0 <= d`; are evaluated at the same time. The right-hand side (RHS) values are captured first, and the actual assignments take place at the end of the clock edge.
+* As a result: `q` gets the previous value of `q0` , `q0` gets the current value of `d`
+* This behavior effectively creates two D flip-flops:
+* One to store the input `d` into `q0`, Another to store the value of `q0` into `q`.
+
+Thus, it correctly implements a two-stage pipeline.
+
+**Now let us see the version with Reversed Assigned Order:**
+
+```verilog
+module code (
+    input clk,
+    input reset,
+    input d,
+    output reg q
+);
+
+reg q0;
+
+always @(posedge clk or posedge reset)
+begin
+    if (reset)
+    begin
+        q0 <= 1'b0;
+        q <= 1'b0;
+    end
+    else
+    begin
+        q0 <= d;
+        q <= q0;
+    end
+end
+
+endmodule
+```
+Even if the order of statements is reversed, non-blocking assignments (`<=`) maintain correct behavior. This is because all right-hand side (RHS) expressions are evaluated before any assignments take place. In this case, `q0` captures the current value of `d`, while `q` receives the previous value of `q0`. As a result, the design still infers two flip-flops, and the overall behavior remains consistent with a proper two-stage pipeline, just as intended.
+
+Therefore, Using non-blocking assignments (`<=`) in sequential logic is the recommended approach in Verilog. It ensures that the correct number of flip-flops are inferred during synthesis and that the logical behavior of the circuit remains accurate regardless of the order of assignment statements. This approach helps avoid unintended mismatches between simulation and synthesis results, which can occur if blocking assignments are used incorrectly. Additionally, non-blocking assignments provide cleaner and more predictable simulation outcomes, leading to consistent behavior across different design and verification tools.
+
+
+
+
+
 
 
 
