@@ -1421,6 +1421,101 @@ Even if the order of statements is reversed, non-blocking assignments (`<=`) mai
 
 Therefore, Using non-blocking assignments (`<=`) in sequential logic is the recommended approach in Verilog. It ensures that the correct number of flip-flops are inferred during synthesis and that the logical behavior of the circuit remains accurate regardless of the order of assignment statements. This approach helps avoid unintended mismatches between simulation and synthesis results, which can occur if blocking assignments are used incorrectly. Additionally, non-blocking assignments provide cleaner and more predictable simulation outcomes, leading to consistent behavior across different design and verification tools.
 
+**Synthesis-Simulation Mismatch**
+The code you shared demonstrates a synthesis-simulation mismatch that occurs due to the use of blocking assignments (`=`) in an incorrect sequence.
+
+Now we will implement the logic: `y = (a | b) & c`. It shows the output of an OR gate with inputs a and b is connected to one input of an AND gate, and c is the other input.
+
+**Version-1: THe Incorrect order(mismatch)**
+```verilog
+module code (
+    input a, b, c,
+    output reg y
+);
+
+reg q0;
+
+always @(*)
+begin
+    y = q0 & c;   // Uses old value of q0
+    q0 = a | b;   // New value computed after y
+end
+
+endmodule
+```
+
+The problem in the above code: The value of `y` is calculated before `q0` gets updated. Because blocking assignments (`=`) execute step by step, `q0` still holds its old value when it's used in the expression `y = q0` & `c`. During simulation, this makes `q0` appear as if it's storing a value like a flip-flop, even though there’s no clock involved. This behavior isn’t intended or synthesizable. On the other hand, synthesis tools interpret `q0` as purely combinational logic, which causes a mismatch between the simulation results and the actual synthesized hardware behavior.
+
+**Version-2: Correct order**
+```verilog
+module code (
+    input a, b, c,
+    output reg y
+);
+
+reg q0;
+
+always @(*)
+begin
+    q0 = a | b;   // Compute q0 first
+    y = q0 & c;   // Then use q0 to compute y
+end
+
+endmodule
+```
+Explanation:
+In this case, `q0` is updated before it is used to calculate `y`. Since the logic is combinational and the blocking assignments are ordered correctly, both simulation and synthesis will behave as expected. The resulting synthesized circuit will consist of an OR gate that computes `q0 = a | b`, followed by an AND gate that computes `y = q0` & `c`. This accurately represents the intended logic: `y = (a | b) & c`.
+
+*Because of issues like those mentioned above, it's important to perform Gate Level Simulation (GLS) to ensure that the design behaves as expected after synthesis. In the next section, we will carry out hands-on labs focused on GLS.*
+
+## Labs on GLS and Synthesis-Simulation Mismatch
+### SKY130RTL D4SK2 L1 Lab GLS Synth Sim Mismatch part1
+**Simulating and synthesizing ternary_operator_mux.v**
+The ternary operator is commonly used in Verilog to implement a 2:1 multiplexer (MUX) in a concise, combinational form.
+
+**Syntax of Ternary Operator:**
+```<condition> ? <true_value> : <false_value>;```
+
+This means: if the `<condition>` is true, then the expression returns `<true_value>`; otherwise, it returns `<false_value>`.
+
+**Example 1: 2:1 MUX using Ternary Operator**
+
+```verilog
+module mux (
+    input wire i0,
+    input wire i1,
+    input wire sel,
+    output wire y
+);
+
+assign y = sel ? i1 : i0;
+
+endmodule
+```
+Let us breakdown the code:
+* When sel = 1, the output y = i1;
+* When sel = 0, the output y = i0.
+
+This is the same as writing:
+
+```verilog
+if (sel)
+    y = i1;
+else
+    y = i0;
+```
+but expressed in a shorter, more concise form that suits combinational logic well.
+
+*Note:*
+*Ternary operators are best used in continuous assignments `(assign)` or within `always @(*)` blocks meant for combinational logic.*
+*For sequential logic that involves a clock (like flip-flops), it's better to use `if-else` statements inside always `@(posedge clk)` blocks.*
+
+Now let us start the Simulation of  `ternary_operator_mux.v`
+
+
+
+
+
 
 
 
