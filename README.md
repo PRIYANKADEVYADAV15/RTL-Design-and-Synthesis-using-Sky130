@@ -1512,6 +1512,43 @@ but expressed in a shorter, more concise form that suits combinational logic wel
 
 Now let us start the Simulation of  `ternary_operator_mux.v`
 
+<img width="1919" height="1079" alt="Screenshot 2025-07-23 101750" src="https://github.com/user-attachments/assets/3f0727f3-15c9-4273-bb14-86b15b4ab6ad" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f6787163-3f5c-4ecf-9e39-4566f074dca3" />
+
+Let us do the Synthesis now:
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4b017bc7-ba47-4203-b04e-01884a0be05e" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d7da2ca4-befe-4fb3-b87b-e1b395ae4a56" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/01cbb076-fb61-4ffb-915c-dbed8714eaba" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e1cdec49-5fc6-420f-bb08-2df03c5a64e1" />
+
+Let us see the code of `ternary_operator_mux_net.v`, the generated netlist of `ternary_operator_mux.v`
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/afdb1047-8af8-4c1e-ae86-4942b68c8746" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e08fec23-bc59-424b-8aa1-108f6cad462e" />
+
+Now that we have generated the netlist, lets do GLS. so the inputs to the iverilog will be our verilog models, netlist and testbench.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
