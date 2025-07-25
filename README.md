@@ -1534,46 +1534,11 @@ Let us see the code of `ternary_operator_mux_net.v`, the generated netlist of `t
 
 Now that we have generated the netlist, lets do GLS. so the inputs to the iverilog will be our verilog models, netlist and testbench.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/568bacce-ca20-4ff3-bd32-6d94d29191b3" />
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a76520ef-1ad5-4088-96fe-0c494f5b01ec" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+If we compare the waveform from previous waveform, we can see that it is exactly same. Therefore the functioanlity is verified.
 
 # Day-5-Optimization in Synthesis
 ## If Case constructs
